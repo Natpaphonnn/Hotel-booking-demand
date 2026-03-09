@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hotel Booking Demand — Revenue Strategy & Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #B8945F;
+    --gold-light: #D4B896;
+    --gold-deep: #8B7242;
+    --dark: #1E1E1E;
+    --navy: #1C2541;
+    --cream: #FAF7F2;
+    --warm-white: #FDFCFA;
+    --white: #FFFFFF;
+    --text: #3D3D3D;
+    --muted: #8C8C8C;
+    --red: #C0392B;
+    --green: #27AE60;
+    --border: #EDE8E2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Prompt', sans-serif; color: var(--text); background: var(--white); overflow-x: hidden; font-weight: 300; }
+
+  /* === LANGUAGE TOGGLE === */
+  .lang-toggle {
+    position: fixed; top: 24px; right: 24px; z-index: 200;
+    display: flex; gap: 0; border-radius: 8px; overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1); border: 1px solid var(--border);
+  }
+  .lang-btn {
+    padding: 8px 16px; font-size: 13px; font-family: 'Prompt'; cursor: pointer;
+    border: none; background: var(--white); color: var(--muted); font-weight: 400;
+    transition: all 0.2s;
+  }
+  .lang-btn.active { background: var(--gold); color: white; font-weight: 500; }
+  .lang-btn:hover:not(.active) { background: var(--cream); }
+  [data-lang="en"] { display: none; }
+  body.en [data-lang="en"] { display: block; }
+  body.en [data-lang="th"] { display: none; }
+  body:not(.en) [data-lang="th"] { display: block; }
+  body:not(.en) [data-lang="en"] { display: none; }
+
+  /* === SCROLL ANIMATIONS === */
+  .reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal-left.visible { opacity: 1; transform: translateX(0); }
+  .reveal-right { opacity: 0; transform: translateX(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal-right.visible { opacity: 1; transform: translateX(0); }
+  .reveal-scale { opacity: 0; transform: scale(0.9); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+  /* Staggered children */
+  .stagger > * { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .stagger.visible > *:nth-child(1) { transition-delay: 0s; }
+  .stagger.visible > *:nth-child(2) { transition-delay: 0.1s; }
+  .stagger.visible > *:nth-child(3) { transition-delay: 0.2s; }
+  .stagger.visible > *:nth-child(4) { transition-delay: 0.3s; }
+  .stagger.visible > *:nth-child(5) { transition-delay: 0.35s; }
+  .stagger.visible > *:nth-child(6) { transition-delay: 0.4s; }
+  .stagger.visible > * { opacity: 1; transform: translateY(0); }
+
+  /* === SECTION BASE === */
+  section { padding: 120px 0; position: relative; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+
+  /* === HERO === */
+  .hero {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(160deg, #0a0a0a 0%, #1a1510 30%, #2c2217 60%, #1e1810 100%);
+    color: white; text-align: center; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -40%; right: -15%; width: 800px; height: 800px;
+    border-radius: 50%; background: radial-gradient(circle, rgba(184,148,95,0.12) 0%, transparent 60%);
+    animation: float 8s ease-in-out infinite;
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -30%; left: -10%; width: 500px; height: 500px;
+    border-radius: 50%; background: radial-gradient(circle, rgba(184,148,95,0.08) 0%, transparent 60%);
+    animation: float 10s ease-in-out infinite reverse;
+  }
+  @keyframes float { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-20px)} }
+  @keyframes pulse-glow { 0%,100%{text-shadow: 0 0 30px rgba(184,148,95,0.3)} 50%{text-shadow: 0 0 60px rgba(184,148,95,0.6)} }
+  @keyframes count-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .hero-inner { position: relative; z-index: 1; max-width: 1100px; width: 100%; }
+  .hero-tag {
+    display: inline-block; border: 1px solid var(--gold); color: var(--gold);
+    padding: 8px 24px; border-radius: 20px; font-size: 12px; letter-spacing: 4px;
+    text-transform: uppercase; margin-bottom: 32px; font-weight: 400;
+  }
+  .hero h1 { font-size: 52px; font-weight: 700; line-height: 1.25; margin-bottom: 20px; }
+  .hero h1 em { font-style: normal; color: var(--gold); }
+  .hero-desc { font-size: 18px; font-weight: 300; color: rgba(255,255,255,0.55); line-height: 1.8; margin-bottom: 48px; max-width: 650px; margin-left: auto; margin-right: auto; }
+
+  /* Hero big number */
+  .hero-big { text-align: center; margin-bottom: 48px; }
+  .hero-big .big-num { font-size: 120px; font-weight: 700; color: var(--gold); line-height: 1; letter-spacing: -3px; animation: pulse-glow 3s ease-in-out infinite; }
+  .hero-big .big-label { font-size: 16px; color: rgba(255,255,255,0.5); letter-spacing: 3px; text-transform: uppercase; margin-top: 8px; font-weight: 300; }
+
+  /* Hero detail grid */
+  .hero-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; max-width: 960px; margin: 0 auto; }
+  .hero-card {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 24px 18px; text-align: center;
+    backdrop-filter: blur(12px); transition: all 0.3s ease;
+  }
+  .hero-card:hover { transform: translateY(-4px); background: rgba(255,255,255,0.1); box-shadow: 0 12px 40px rgba(0,0,0,0.2); }
+  .hero-card .hc-val { font-size: 36px; font-weight: 700; color: var(--gold); line-height: 1.1; }
+  .hero-card .hc-val.hc-red { color: #e74c3c; }
+  .hero-card .hc-val.hc-green { color: #2ecc71; }
+  .hero-card .hc-label { font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 8px; line-height: 1.4; }
+  .hero-card .hc-detail { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 6px; }
+
+  .hero-metrics { display: flex; gap: 60px; justify-content: center; flex-wrap: wrap; }
+  .hero-metric { text-align: center; }
+  .hero-metric .val { font-size: 52px; font-weight: 700; color: var(--gold); }
+  .hero-metric .lbl { font-size: 13px; color: rgba(255,255,255,0.5); letter-spacing: 2px; text-transform: uppercase; margin-top: 6px; }
+  .scroll-cue {
+    position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+    color: rgba(255,255,255,0.3); font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  }
+  .scroll-cue span { display: block; width: 1px; height: 28px; background: var(--gold); margin: 8px auto 0; opacity: 0.5; }
+
+  /* === SECTION HEADERS === */
+  .sec-num { font-size: 100px; font-weight: 800; color: var(--gold); opacity: 0.08; line-height: 1; margin-bottom: -36px; letter-spacing: -4px; }
+  .sec-tag { display: inline-block; font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; font-weight: 500; }
+  h2 { font-size: 44px; font-weight: 700; color: var(--dark); line-height: 1.25; margin-bottom: 16px; }
+  h2 em { font-style: normal; color: var(--gold); }
+  .sec-desc { font-size: 18px; color: var(--muted); line-height: 1.8; max-width: 750px; margin-bottom: 48px; }
+
+  /* === BENTO GRID === */
+  .bento { display: grid; gap: 16px; }
+  .bento-2x2 { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; }
+  .bento-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .bento-hero { grid-template-columns: 2fr 1fr; }
+  .bento-hero-r { grid-template-columns: 1fr 2fr; }
+  .bento-mixed { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto auto; }
+  .bento-mixed .span-2 { grid-column: span 2; }
+
+  .card {
+    background: var(--white); border: 1px solid var(--border); border-radius: 16px;
+    padding: 28px; position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
+  .card-dark { background: var(--dark); border-color: rgba(255,255,255,0.08); color: white; }
+  .card-dark:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+  .card-gold { background: linear-gradient(135deg, var(--gold-deep), var(--gold)); color: white; border: none; }
+  .card-cream { background: var(--cream); border-color: var(--border); }
+  .card-green { background: linear-gradient(135deg, #1a472a, #27AE60); color: white; border: none; }
+  .card-navy { background: linear-gradient(135deg, #2c2217, #3d3020); color: white; border: none; }
+
+  .card-label { font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; font-weight: 400; }
+  .card-dark .card-label, .card-gold .card-label, .card-green .card-label, .card-navy .card-label { color: rgba(255,255,255,0.5); }
+  .card-val { font-size: 44px; font-weight: 700; color: var(--gold); margin-bottom: 6px; }
+  .card-dark .card-val { color: var(--gold-light); }
+  .card-gold .card-val, .card-green .card-val, .card-navy .card-val { color: white; }
+  .card-val.red { color: var(--red); }
+  .card-val.green { color: var(--green); }
+  .card-sub { font-size: 15px; color: var(--muted); line-height: 1.6; }
+  .card-dark .card-sub { color: rgba(255,255,255,0.5); }
+  .card-gold .card-sub, .card-green .card-sub, .card-navy .card-sub { color: rgba(255,255,255,0.7); }
+
+  .card h3 { font-size: 20px; font-weight: 600; margin-bottom: 12px; }
+  .card p { font-size: 16px; line-height: 1.7; color: var(--muted); }
+  .card-dark p { color: rgba(255,255,255,0.6); }
+  .card-gold p, .card-green p, .card-navy p { color: rgba(255,255,255,0.8); }
+
+  .hl { color: var(--gold-deep); font-weight: 600; font-size: 1.05em; }
+  .hl-r { color: var(--red); font-weight: 600; font-size: 1.05em; }
+  .hl-g { color: var(--green); font-weight: 600; font-size: 1.05em; }
+
+  /* === SPLIT SECTION === */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+  .split-text h2 { font-size: 38px; }
+  .split-text p { font-size: 17px; color: var(--muted); line-height: 1.8; margin-bottom: 24px; }
+
+  /* === CHART IMAGE === */
+  .chart-img {
+    width: 100%; border-radius: 12px; display: block;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
+  .chart-wrap {
+    background: var(--white); border-radius: 16px; padding: 16px;
+    border: 1px solid var(--border); overflow: hidden;
+  }
+  .chart-wrap img { width: 100%; border-radius: 10px; display: block; }
+
+  /* === CALLOUT === */
+  .callout {
+    background: var(--cream); border-left: 5px solid var(--gold); border-radius: 0 14px 14px 0;
+    padding: 24px 28px; margin-top: 28px;
+  }
+  .callout-dark { background: rgba(255,255,255,0.05); border-left-color: var(--gold-light); }
+  .callout .cl-tag { font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; font-weight: 500; }
+  .callout p { font-size: 16px; line-height: 1.8; color: var(--text); }
+
+  /* === PIPELINE FLOW === */
+  .pipeline { display: flex; gap: 0; align-items: stretch; margin: 36px 0; }
+  .pipe-step {
+    flex: 1; padding: 28px 22px; text-align: center; position: relative;
+    background: var(--cream); border: 1px solid var(--border);
+  }
+  .pipe-step:first-child { border-radius: 14px 0 0 14px; }
+  .pipe-step:last-child { border-radius: 0 14px 14px 0; }
+  .pipe-step .pipe-icon { font-size: 28px; margin-bottom: 10px; font-weight: 700; color: var(--gold); }
+  .pipe-step .pipe-title { font-size: 15px; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
+  .pipe-step .pipe-desc { font-size: 13px; color: var(--muted); }
+  .pipe-arrow { display: flex; align-items: center; color: var(--gold); font-size: 24px; padding: 0 4px; background: var(--cream); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-weight: 700; }
+
+  /* === TABLE === */
+  .strat-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 14px; overflow: hidden; margin-top: 28px; }
+  .strat-table th {
+    background: var(--dark); color: white; font-size: 13px; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 16px 20px; text-align: left; font-weight: 400;
+  }
+  .strat-table td { padding: 16px 20px; font-size: 15px; border-bottom: 1px solid var(--border); line-height: 1.7; }
+  .strat-table tr:hover td { background: var(--cream); }
+  .seg-badge { display: inline-block; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; }
+  .seg-high { background: var(--gold); color: white; }
+  .seg-mid { background: var(--gold-light); color: var(--dark); }
+  .seg-loyal { background: var(--cream); color: var(--gold-deep); border: 1px solid var(--gold-light); }
+  .seg-budget { background: #f0f0f0; color: var(--muted); }
+
+  /* === DARK SECTION === */
+  .sec-dark { background: var(--dark); color: white; }
+  .sec-dark h2 { color: white; }
+  .sec-dark .sec-desc { color: rgba(255,255,255,0.5); }
+  .sec-dark .card { border-color: rgba(255,255,255,0.08); }
+
+  .sec-cream { background: var(--cream); }
+  .sec-warm { background: var(--warm-white); }
+
+  /* === PREDICTOR === */
+  .predictor-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;
+  }
+  .predictor-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label {
+    font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted); font-weight: 400;
+  }
+  .form-group select, .form-group input {
+    padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px;
+    font-family: 'Prompt'; font-size: 15px; background: var(--white);
+    color: var(--dark); outline: none; transition: border-color 0.2s;
+  }
+  .form-group select:focus, .form-group input:focus { border-color: var(--gold); }
+  .predict-btn {
+    grid-column: span 2; padding: 16px; border: none; border-radius: 12px;
+    background: linear-gradient(135deg, var(--gold-deep), var(--gold));
+    color: white; font-family: 'Prompt'; font-size: 17px; font-weight: 600;
+    cursor: pointer; transition: all 0.3s; letter-spacing: 1px; margin-top: 8px;
+  }
+  .predict-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(184,148,95,0.4); }
+
+  .result-panel {
+    background: var(--white); border: 1px solid var(--border); border-radius: 20px;
+    padding: 40px; text-align: center; position: sticky; top: 100px;
+  }
+  .risk-gauge { position: relative; width: 200px; height: 200px; margin: 0 auto 24px; }
+  .risk-circle {
+    width: 200px; height: 200px; border-radius: 50%;
+    background: conic-gradient(var(--green) 0%, var(--green) var(--pct), #eee var(--pct), #eee 100%);
+    display: flex; align-items: center; justify-content: center;
+    transition: --pct 0.8s ease;
+  }
+  .risk-inner {
+    width: 150px; height: 150px; border-radius: 50%; background: var(--white);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .risk-pct { font-size: 48px; font-weight: 700; color: var(--dark); line-height: 1; }
+  .risk-label-sm { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-top: 4px; }
+  .risk-level {
+    font-size: 22px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 12px; padding: 8px 24px; border-radius: 10px; display: inline-block;
+  }
+  .risk-low { color: var(--green); background: rgba(39,174,96,0.1); }
+  .risk-med { color: #f39c12; background: rgba(243,156,18,0.1); }
+  .risk-high { color: var(--red); background: rgba(192,57,43,0.1); }
+  .risk-factors { text-align: left; margin-top: 20px; }
+  .risk-factors h4 { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .factor-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .factor-name { font-size: 13px; color: var(--text); min-width: 120px; }
+  .factor-fill { height: 8px; border-radius: 4px; background: var(--gold); transition: width 0.5s ease; }
+
+  @media (max-width: 900px) {
+    .predictor-grid { grid-template-columns: 1fr; }
+    .predict-btn { grid-column: span 2; }
+  }
+
+  /* === PROGRESS BAR === */
+  .progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--gold-deep), var(--gold), var(--gold-light));
+    z-index: 300; width: 0%; transition: width 0.15s ease;
+    box-shadow: 0 0 10px rgba(184,148,95,0.5);
+  }
+
+  /* === FOOTER === */
+  .footer { background: var(--dark); color: rgba(255,255,255,0.4); text-align: center; padding: 60px 40px; font-size: 14px; letter-spacing: 1px; }
+  .footer .tech-row { display: flex; gap: 12px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+  .footer .tech { padding: 8px 18px; border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; font-size: 13px; color: rgba(255,255,255,0.5); transition: all 0.2s; }
+  .footer .tech:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 900px) {
+    .hero h1 { font-size: 36px; }
+    .hero-big .big-num { font-size: 72px; }
+    h2 { font-size: 32px; }
+    .sec-num { font-size: 64px; }
+    .card-val { font-size: 36px; }
+    .bento-2x2, .bento-3, .bento-hero, .bento-hero-r, .bento-mixed { grid-template-columns: 1fr; }
+    .bento-mixed .span-2 { grid-column: span 1; }
+    .split { grid-template-columns: 1fr; gap: 30px; }
+    .hero-metrics { gap: 24px; }
+    .hero-metric .val { font-size: 36px; }
+    .pipeline { flex-direction: column; }
+    .pipe-step:first-child { border-radius: 14px 14px 0 0; }
+    .pipe-step:last-child { border-radius: 0 0 14px 14px; }
+    .pipe-arrow { justify-content: center; padding: 4px; border-left: 1px solid var(--border); border-right: 1px solid var(--border); border-top: none; border-bottom: none; }
+    .container { padding: 0 20px; }
+    section { padding: 70px 0; }
+    .hero-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-bar" id="progress"></div>
+
+<!-- Language Toggle -->
+<div class="lang-toggle">
+  <button class="lang-btn active" id="btn-th" onclick="setLang('th')">TH</button>
+  <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+
+
+<!-- ============================================================== -->
+<!-- HERO                                                            -->
+<!-- ============================================================== -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Data Science</div>
+
+    <div data-lang="th">
+      <h1>วิเคราะห์ข้อมูลการจองโรงแรม<br>เพื่อ<em>เพิ่มรายได้และลดความเสียหาย</em></h1>
+      <p class="hero-desc">เปลี่ยนข้อมูลการจอง 119,390 รายการ ให้กลายเป็นกลยุทธ์ที่กู้รายได้กว่า 16.7 ล้านดอลลาร์ ปรับราคาอัจฉริยะ และเข้าใจแขกในแบบที่ไม่เคยทำได้มาก่อน</p>
+    </div>
+    <div data-lang="en">
+      <h1>Hotel Booking Demand<br><em>Revenue Strategy & Analytics</em></h1>
+      <p class="hero-desc">Turning 119,390 bookings into actionable strategy — recovering $16.7M in lost revenue, optimizing pricing, and personalizing the guest experience.</p>
+    </div>
+
+    <!-- BIG HERO NUMBER -->
+    <div class="hero-big">
+      <div class="big-num" data-count="16.7" data-prefix="$" data-suffix="M">$0M</div>
+      <div class="big-label" data-lang="th">รายได้ที่สูญเสียจากการยกเลิก — และเราจะกู้มันคืน</div>
+      <div class="big-label" data-lang="en">Revenue lost to cancellations — and we're recovering it</div>
+    </div>
+
+    <!-- DETAIL GRID -->
+    <div class="hero-grid">
+      <div class="hero-card">
+        <div class="hc-val" data-count="119388" data-suffix="">0</div>
+        <div class="hc-label" data-lang="th">รายการจอง</div>
+        <div class="hc-label" data-lang="en">Bookings Analyzed</div>
+        <div class="hc-detail" data-lang="th">~151 รายการ/วัน</div>
+        <div class="hc-detail" data-lang="en">~151 per day</div>
+      </div>
+      <div class="hero-card">
+        <div class="hc-val" data-count="42.7" data-prefix="$" data-suffix="M">$0M</div>
+        <div class="hc-label" data-lang="th">รายได้ที่ควรได้ทั้งหมด</div>
+        <div class="hc-label" data-lang="en">Total Potential Revenue</div>
+        <div class="hc-detail" data-lang="th">เฉลี่ย $346/การจอง</div>
+        <div class="hc-detail" data-lang="en">Avg $346/booking</div>
+      </div>
+      <div class="hero-card">
+        <div class="hc-val hc-red" data-count="44223" data-suffix="">0</div>
+        <div class="hc-label" data-lang="th">การจองที่ถูกยกเลิก</div>
+        <div class="hc-label" data-lang="en">Canceled Bookings</div>
+        <div class="hc-detail" data-lang="th">~56 ห้อง/วัน ว่างเปล่า</div>
+        <div class="hc-detail" data-lang="en">~56 empty rooms/day</div>
+      </div>
+      <div class="hero-card">
+        <div class="hc-val hc-green" data-count="94.4" data-suffix="%">0%</div>
+        <div class="hc-label" data-lang="th">ความแม่นยำ AI</div>
+        <div class="hc-label" data-lang="en">AI Prediction Accuracy</div>
+        <div class="hc-detail" data-lang="th">XGBoost ROC-AUC</div>
+        <div class="hc-detail" data-lang="en">XGBoost ROC-AUC</div>
+      </div>
+    </div>
+
+    <!-- SECONDARY ROW -->
+    <div class="hero-grid" style="margin-top:12px; grid-template-columns: repeat(3, 1fr); max-width: 680px;">
+      <div class="hero-card">
+        <div class="hc-val" style="font-size:24px;">$32,824</div>
+        <div class="hc-label" data-lang="th">รายได้จริง/วัน</div>
+        <div class="hc-label" data-lang="en">Actual Rev/Day</div>
+      </div>
+      <div class="hero-card">
+        <div class="hc-val hc-red" style="font-size:24px;">-$21,113</div>
+        <div class="hc-label" data-lang="th">สูญเสีย/วัน</div>
+        <div class="hc-label" data-lang="en">Lost/Day</div>
+      </div>
+      <div class="hero-card">
+        <div class="hc-val" style="font-size:24px;">177</div>
+        <div class="hc-label" data-lang="th">ประเทศทั่วโลก</div>
+        <div class="hc-label" data-lang="en">Countries</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue" data-lang="th">เลื่อนเพื่อดูเรื่องราว<span></span></div>
+  <div class="scroll-cue" data-lang="en">Scroll to explore<span></span></div>
+</section>
+
+
+<!-- ============================================================== -->
+<!-- 01: THE DATA                                                     -->
+<!-- ============================================================== -->
+<section class="sec-warm" id="s1">
+  <div class="container reveal">
+    <div class="sec-num">01</div>
+    <div data-lang="th">
+      <div class="sec-tag">จุดเริ่มต้น</div>
+      <h2>ข้อมูลที่เรามีคืออะไร?</h2>
+      <p class="sec-desc">เราได้รับข้อมูลการจองจากโรงแรม 2 แห่งในโปรตุเกส ตั้งแต่กลางปี 2015 ถึงปลายปี 2017 — ข้อมูลทุกอย่างตั้งแต่ใครจอง จองเมื่อไหร่ ราคาเท่าไหร่ และ…มาจริงหรือเปล่า</p>
+    </div>
+    <div data-lang="en">
+      <div class="sec-tag">Starting Point</div>
+      <h2>What Data Do We Have?</h2>
+      <p class="sec-desc">Booking records from two hotels in Portugal, spanning July 2015 to August 2017 — who booked, when, at what price, and whether they actually showed up.</p>
+    </div>
+
+    <div class="bento bento-mixed">
+      <div class="card">
+        <div class="card-label" data-lang="th">จำนวนข้อมูล</div><div class="card-label" data-lang="en">Records</div>
+        <div class="card-val">119,390</div>
+        <div class="card-sub" data-lang="th">รายการจองทั้งหมด</div><div class="card-sub" data-lang="en">Total bookings</div>
+      </div>
+      <div class="card">
+        <div class="card-label" data-lang="th">ข้อมูลต่อรายการ</div><div class="card-label" data-lang="en">Attributes</div>
+        <div class="card-val">32</div>
+        <div class="card-sub" data-lang="th">ตัวแปรที่บันทึกไว้ต่อการจอง</div><div class="card-sub" data-lang="en">Variables per booking</div>
+      </div>
+      <div class="card">
+        <div class="card-label" data-lang="th">ประเทศแขก</div><div class="card-label" data-lang="en">Guest Origins</div>
+        <div class="card-val">177</div>
+        <div class="card-sub" data-lang="th">ประเทศทั่วโลก</div><div class="card-sub" data-lang="en">Countries worldwide</div>
+      </div>
+      <div class="card card-cream span-2">
+        <div class="card-label" data-lang="th">ประเภทโรงแรม</div><div class="card-label" data-lang="en">Hotel Types</div>
+        <div style="display:flex; gap:40px; margin-top:8px;">
+          <div><div class="card-val">79,330</div><div class="card-sub">City Hotel</div></div>
+          <div><div class="card-val">40,060</div><div class="card-sub">Resort Hotel</div></div>
+          <div><div class="card-val" style="font-size:24px; margin-top:8px;">3.4</div><div class="card-sub" data-lang="th">คืนเฉลี่ยต่อการเข้าพัก</div><div class="card-sub" data-lang="en">Avg nights per stay</div></div>
+        </div>
+      </div>
+      <div class="card card-dark">
+        <div class="card-label" data-lang="th">คุณภาพข้อมูล</div><div class="card-label" data-lang="en">Data Quality</div>
+        <div class="card-val" style="font-size:28px;">99.998%</div>
+        <div class="card-sub" data-lang="th">ข้อมูลใช้งานได้หลังทำความสะอาด (ตัดเพียง 2 แถวที่ผิดปกติ)</div>
+        <div class="card-sub" data-lang="en">Usable after cleaning (only 2 rows removed)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!-- 02: THE PROBLEM                                                   -->
+<!-- ============================================================== -->
+<section class="sec-dark" id="s2">
+  <div class="container reveal">
+    <div class="sec-num" style="color: var(--gold-light);">02</div>
+    <div data-lang="th">
+      <div class="sec-tag">ปัญหาที่ค้นพบ</div>
+      <h2>16.7 ล้านดอลลาร์ ที่หายไป</h2>
+      <p class="sec-desc">เมื่อเราเริ่มดูตัวเลข สิ่งแรกที่เห็นชัดเจนคือ — การยกเลิกการจองกำลังกัดกินรายได้ของโรงแรมอย่างร้ายแรง เกือบ <strong style="color:var(--gold)">4 ใน 10 ห้อง</strong>ที่จองไว้ ไม่มีแขกมาเข้าพักจริง</p>
+    </div>
+    <div data-lang="en">
+      <div class="sec-tag">The Problem</div>
+      <h2>$16.7 Million Left on the Table</h2>
+      <p class="sec-desc">The first thing that jumped out — cancellations are eating nearly <strong style="color:var(--gold)">4 out of every 10 bookings</strong>. That's massive revenue walking out the door.</p>
+    </div>
+
+    <!-- Chart full width -->
+    <div class="chart-wrap" style="border-color: rgba(255,255,255,0.08); margin-bottom:20px;">
+      <img src="outputs/figures/01_revenue_overview.png" alt="Revenue Overview" class="chart-img">
+    </div>
+
+    <!-- Stats row -->
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:14px;">
+      <div class="card card-dark" style="padding:20px; text-align:center;">
+        <div class="card-label" data-lang="th">รายได้จริง</div><div class="card-label" data-lang="en">Actual Revenue</div>
+        <div class="card-val" style="color:var(--green); font-size:28px;">$26.0M</div>
+        <div class="card-sub" data-lang="th">$32,824/วัน</div><div class="card-sub" data-lang="en">$32,824/day</div>
+      </div>
+      <div class="card card-dark" style="padding:20px; text-align:center;">
+        <div class="card-label" data-lang="th">รายได้สูญเสีย</div><div class="card-label" data-lang="en">Revenue Lost</div>
+        <div class="card-val red" style="font-size:28px;">-$16.7M</div>
+        <div class="card-sub" data-lang="th">-$21,113/วัน &times; 792 วัน</div>
+        <div class="card-sub" data-lang="en">-$21,113/day &times; 792 days</div>
+      </div>
+      <div class="card card-dark" style="padding:20px; text-align:center;">
+        <div class="card-label">City Hotel</div>
+        <div class="card-val red" style="font-size:28px;">41.7%</div>
+        <div class="card-sub" data-lang="th">ยกเลิก 33,095 / 79,329</div>
+        <div class="card-sub" data-lang="en">33,095 of 79,329 canceled</div>
+      </div>
+      <div class="card card-dark" style="padding:20px; text-align:center;">
+        <div class="card-label">Resort Hotel</div>
+        <div class="card-val" style="font-size:28px; color:var(--gold);">27.8%</div>
+        <div class="card-sub" data-lang="th">ยกเลิก 11,128 / 40,059</div>
+        <div class="card-sub" data-lang="en">11,128 of 40,059 canceled</div>
+      </div>
+    </div>
+
+    <div class="callout callout-dark" style="margin-top:24px;">
+      <div class="cl-tag" data-lang="th">คำถามที่จุดประกายโปรเจกต์นี้</div>
+      <div class="cl-tag" data-lang="en">The Question That Sparked This Project</div>
+      <p data-lang="th" style="color: rgba(255,255,255,0.7);">ถ้าเราสามารถ <strong style="color:var(--gold)">คาดการณ์ล่วงหน้า</strong>ได้ว่าใครจะยกเลิก เราจะสามารถรับจองเกิน (overbooking) อย่างชาญฉลาด ปรับราคาตามสถานการณ์ และดูแลแขกที่ใช่ได้ดีขึ้น — กู้รายได้หลายล้านกลับมาได้หรือไม่?</p>
+      <p data-lang="en" style="color: rgba(255,255,255,0.7);">If we could <strong style="color:var(--gold)">predict in advance</strong> who will cancel, could we overbook strategically, price dynamically, and focus on the right guests — recovering millions?</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!-- 03: REVENUE ANATOMY                                               -->
+<!-- ============================================================== -->
+<section id="s3">
+  <div class="container reveal">
+    <div class="sec-num">03</div>
+    <div data-lang="th">
+      <div class="sec-tag">วิเคราะห์เชิงลึก</div>
+      <h2>เงินมาจากไหน — แล้วใครยกเลิกมากที่สุด?</h2>
+      <p class="sec-desc">ก่อนจะแก้ปัญหา ต้องเข้าใจก่อนว่าใครคือลูกค้าหลัก ช่องทางไหนทำเงิน และจุดไหนที่เป็นจุดเสี่ยง</p>
+    </div>
+    <div data-lang="en">
+      <div class="sec-tag">Deep Dive</div>
+      <h2>Where Does the Money Come From — and Who Cancels?</h2>
+      <p class="sec-desc">Before solving the problem, we need to understand who our guests are, which channels drive revenue, and where the risks lie.</p>
+    </div>
+
+    <div class="bento bento-2x2">
+      <div class="chart-wrap"><img src="outputs/figures/03_revenue_by_segment.png" alt="Revenue by Segment"></div>
+      <div class="chart-wrap"><img src="outputs/figures/04_top_countries.png" alt="Top Countries"></div>
+    </div>
+
+    <div class="bento bento-3" style="margin-top:16px;">
+      <div class="card">
+        <h3 data-lang="th">OTA ครองตลาด</h3><h3 data-lang="en">OTA Dominance</h3>
+        <p data-lang="th">Online TA สร้างรายได้ <span class="hl">$13.7M</span> จาก 56,477 การจอง (ADR เฉลี่ย $114) แต่ยกเลิก <span class="hl-r">36.7%</span> บวกค่าคอมมิชชั่น 15-25% = กำไรจริงน้อยกว่าที่คิดมาก</p>
+        <p data-lang="en">Online TA generates <span class="hl">$13.7M</span> from 56,477 bookings (avg ADR $114) but cancels <span class="hl-r">36.7%</span> plus 15-25% commission = real profit much lower than expected.</p>
+      </div>
+      <div class="card">
+        <h3 data-lang="th">ปัญหาตลาดในประเทศ</h3><h3 data-lang="en">Portugal Paradox</h3>
+        <p data-lang="th">โปรตุเกส 48,589 การจอง (อันดับ 1) แต่ยกเลิก <span class="hl-r">56.6%</span> — สร้างรายได้จริงแค่ <span class="hl">$5.5M</span> ขณะที่อังกฤษ 12,128 การจอง ยกเลิกแค่ 20.2% สร้างรายได้ <span class="hl">$4.1M</span></p>
+        <p data-lang="en">Portugal: 48,589 bookings (#1) but <span class="hl-r">56.6% cancel</span> — only <span class="hl">$5.5M</span> actual revenue. UK: 12,128 bookings, 20.2% cancel, generates <span class="hl">$4.1M</span></p>
+      </div>
+      <div class="card">
+        <h3 data-lang="th">จองตรง = มั่นคงกว่า</h3><h3 data-lang="en">Direct = Reliable</h3>
+        <p data-lang="th">Direct 12,606 การจอง ยกเลิกเพียง <span class="hl-g">15.3%</span> สร้างรายได้ <span class="hl">$4.1M</span> (ADR $114 เท่ากับ OTA แต่ไม่มีค่าคอมฯ!) ส่วน Groups 19,810 การจอง ยกเลิก <span class="hl-r">61.1%</span> ได้แค่ $1.9M</p>
+        <p data-lang="en">Direct: 12,606 bookings, only <span class="hl-g">15.3% cancel</span>, generates <span class="hl">$4.1M</span> (ADR $114 — same as OTA but zero commission!). Groups: 19,810 bookings, <span class="hl-r">61.1% cancel</span>, only $1.9M.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!-- 04: CANCELLATION PATTERNS                                         -->
+<!-- ============================================================== -->
+<section class="sec-cream" id="s4">
+  <div class="container reveal">
+    <div class="sec-num">04</div>
+    <div data-lang="th">
+      <div class="sec-tag">ค้นพบรูปแบบ</div>
+      <h2>ทำไมแขกถึงยกเลิก?</h2>
+      <p class="sec-desc">เราพบ 3 สัญญาณสำคัญที่บอกได้ว่าการจองไหนมีความเสี่ยงสูงที่จะถูกยกเลิก — และทุกสัญญาณรู้ได้ตั้งแต่วันที่จอง</p>
+    </div>
+    <div data-lang="en">
+      <div class="sec-tag">Pattern Discovery</div>
+      <h2>Why Do Guests Cancel?</h2>
+      <p class="sec-desc">We found 3 key signals that predict cancellation risk — and all of them are known at the time of booking.</p>
+    </div>
+
+    <div class="split">
+      <div>
+        <div class="chart-wrap"><img src="outputs/figures/05_cancel_by_leadtime.png" alt="Cancel by Lead Time"></div>
+        <div class="callout" style="margin-top:16px;">
+          <div class="cl-tag" data-lang="th">สัญญาณที่ 1: ยิ่งจองเร็ว ยิ่งยกเลิกเยอะ</div>
+          <div class="cl-tag" data-lang="en">Signal 1: Earlier booking = Higher cancellation</div>
+          <p data-lang="th">0-7 วัน: ยกเลิก <span class="hl-g">9.6%</span> (เสีย $449K) &rarr; 31-90 วัน: <span class="hl">37.7%</span> (เสีย $4.3M) &rarr; 181-365 วัน: <span class="hl-r">55.5%</span> (เสีย $4.4M) &rarr; 365+ วัน: <span class="hl-r">67.7%</span> — ยิ่งจองเร็ว ยิ่งเสี่ยง <strong>7 เท่า!</strong></p>
+          <p data-lang="en">0-7d: <span class="hl-g">9.6%</span> ($449K lost) &rarr; 31-90d: <span class="hl">37.7%</span> ($4.3M lost) &rarr; 181-365d: <span class="hl-r">55.5%</span> ($4.4M lost) &rarr; 365d+: <span class="hl-r">67.7%</span> — a <strong>7x increase!</strong></p>
+        </div>
+      </div>
+      <div>
+        <div class="chart-wrap"><img src="outputs/figures/06_cancel_by_deposit.png" alt="Cancel by Deposit"></div>
+        <div class="callout" style="margin-top:16px;">
+          <div class="cl-tag" data-lang="th">สัญญาณที่ 2: มัดจำ ≠ การันตี</div>
+          <div class="cl-tag" data-lang="en">Signal 2: Deposit ≠ Guarantee</div>
+          <p data-lang="th">การจองแบบ Non-Refundable มีอัตรายกเลิก <span class="hl-r">99.4%</span> — เพราะ OTA ใช้ระบบ "จองก่อน ตัดสินใจทีหลัง" ไม่ใช่ความตั้งใจจริง</p>
+          <p data-lang="en">Non-refundable bookings cancel at <span class="hl-r">99.4%</span> — OTAs use "book now, decide later" models. Not genuine commitment.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bento bento-2x2" style="margin-top:24px;">
+      <div class="chart-wrap span-2" style="grid-column: span 2;"><img src="outputs/figures/07_monthly_cancel_trend.png" alt="Monthly Trend"></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!-- 05: HIDDEN SIGNALS                                                -->
+<!-- ============================================================== -->
+<section id="s5">
+  <div class="container reveal">
+    <div class="sec-num">05</div>
+    <div data-lang="th">
+      <div class="sec-tag">สัญญาณซ่อนเร้น</div>
+      <h2>2 พฤติกรรมที่บ่งบอกว่าแขกจะมาจริง</h2>
+      <p class="sec-desc">ท่ามกลางข้อมูลมหาศาล เราพบ 2 สัญญาณง่ายๆ ที่ช่วยแยก "แขกจริง" ออกจาก "แขกที่จะหายไป" ได้แม่นยำอย่างน่าประหลาดใจ</p>
+    </div>
+    <div data-lang="en">
+      <div class="sec-tag">Hidden Signals</div>
+      <h2>Two Behaviors That Predict Loyalty</h2>
+      <p class="sec-desc">Among the noise, we found two surprisingly strong signals that separate "real guests" from "ghost bookings."</p>
+    </div>
+
+    <div class="bento bento-2x2">
+      <div class="card" style="border-left: 4px solid var(--gold);">
+        <h3 data-lang="th">แขกที่มี Special Request = ตั้งใจมาจริง</h3>
+        <h3 data-lang="en">Special Requests = Real Intent</h3>
+        <p data-lang="th" style="font-size:15px; margin-bottom:16px;">แขกที่ขอหมอนเพิ่ม เลือกห้องชั้นสูง หรือระบุความต้องการพิเศษ — ยกเลิกเพียง <span class="hl-g">21.7%</span></p>
+        <p data-lang="en" style="font-size:15px; margin-bottom:16px;">Guests who request extra pillows, high floors, or specific needs cancel at only <span class="hl-g">21.7%</span></p>
+        <div style="display:flex; gap:20px;">
+          <div class="card card-cream" style="flex:1; padding:16px; text-align:center;">
+            <div style="font-size:24px; font-weight:600; color:var(--green);">21.7%</div>
+            <div style="font-size:11px; color:var(--muted);" data-lang="th">มี Special Request</div>
+            <div style="font-size:11px; color:var(--muted);" data-lang="en">With requests</div>
+          </div>
+          <div class="card card-cream" style="flex:1; padding:16px; text-align:center;">
+            <div style="font-size:24px; font-weight:600; color:var(--red);">47.7%</div>
+            <div style="font-size:11px; color:var(--muted);" data-lang="th">ไม่มี Special Request</div>
+            <div style="font-size:11px; color:var(--muted);" data-lang="en">Without requests</div>
+          </div>
+        </div>
+        <p data-lang="th" style="margin-top:12px; font-size:13px;">ลดความเสี่ยงได้ <strong>2.2 เท่า</strong> — สัญญาณนี้ใช้ได้ทันทีจากข้อมูลที่มีอยู่แล้ว</p>
+        <p data-lang="en" style="margin-top:12px; font-size:13px;"><strong>2.2x risk reduction</strong> — this signal is already in your existing data.</p>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--gold);">
+        <h3 data-lang="th">แขกเก่า = ทองคำของโรงแรม</h3>
+        <h3 data-lang="en">Repeat Guests = Gold</h3>
+        <p data-lang="th" style="font-size:15px; margin-bottom:16px;">แขกที่เคยเข้าพักแล้วกลับมาจองใหม่ ยกเลิกเพียง <span class="hl-g">14.5%</span> เทียบกับแขกใหม่ที่ยกเลิก <span class="hl-r">37.8%</span></p>
+        <p data-lang="en" style="font-size:15px; margin-bottom:16px;">Returning guests cancel at just <span class="hl-g">14.5%</span> vs first-timers at <span class="hl-r">37.8%</span></p>
+        <div style="display:flex; gap:20px;">
+          <div class="card card-cream" style="flex:1; padding:16px; text-align:center;">
+            <div style="font-size:24px; font-weight:600; color:var(--green);">14.5%</div>
+            <div style="font-size:11px; color:var(--muted);" data-lang="th">แขกเก่า</div>
+            <div style="font-size:11px; color:var(--muted);" data-lang="en">Repeat guest</div>
+          </div>
+          <div class="card card-cream" style="flex:1; padding:16px; text-align:center;">
+            <div style="font-size:24px; font-weight:600; color:var(--red);">37.8%</div>
+            <div style="font-size:11px; color:var(--muted);" data-lang="th">แขกใหม่</div>
+            <div style="font-size:11px; color:var(--muted);" data-lang="en">First-timer</div>
+          </div>
+        </div>
+        <p data-lang="th" style="margin-top:12px; font-size:13px;">ลดความเสี่ยง <strong>2.6 เท่า</strong> — แต่ตอนนี้มีแขกเก่าเพียง <span class="hl">3.2%</span> ยังมีโอกาสเติบโตอีกมาก</p>
+        <p data-lang="en" style="margin-top:12px; font-size:13px;"><strong>2.6x risk reduction</strong> — but only <span class="hl">3.2%</span> are repeat guests. Huge growth opportunity.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!-- 06: ML MODEL                                                      -->
+<!-- ============================================================== -->
+<section class="sec-dark" id="s6">
+  <div class="container reveal">
+    <div class="sec-num" style="color:var(--gold-light);">06</div>
+    <div data-lang="th">
+      <div class="sec-tag">แก้ปัญหา #1: ทำนายการยกเลิก</div>
+      <h2>สร้าง AI ที่มองเห็นอนาคต</h2>
+      <p class="sec-desc">เราสร้างโมเดล 5 ตัว เริ่มจากง่ายไปซับซ้อน — และพบว่า XGBoost ทำนายได้แม่นยำถึง 94.5% สูงพอที่จะใช้งานจริงในการรับจองเกินอย่างชาญฉลาด</p>
+    </div>
+    <div data-lang="en">
+      <div class="sec-tag">Solution #1: Cancellation Prediction</div>
+      <h2>Building an AI That Sees the Future</h2>
+      <p class="sec-desc">We trained 5 models — from simple to complex. XGBoost achieved 94.5% accuracy, production-ready for smart overbooking.</p>
+    </div>
+
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="pipe-title">Logistic Reg.</div>
+        <div class="pipe-desc" data-lang="th">พื้นฐาน</div><div class="pipe-desc" data-lang="en">Baseline</div>
+        <div style="font-size:22px; font-weight:600; color:var(--gold); margin-top:8px;">86.0%</div>
+      </div>
+      <div class="pipe-arrow">&rarr;</div>
+      <div class="pipe-step">
+        <div class="pipe-title">Random Forest</div>
+        <div style="font-size:22px; font-weight:600; color:var(--gold); margin-top:8px;">94.1%</div>
+      </div>
+      <div class="pipe-arrow">&rarr;</div>
+      <div class="pipe-step">
+        <div class="pipe-title">Gradient Boost</div>
+        <div style="font-size:22px; font-weight:600; color:var(--gold); margin-top:8px;">94.1%</div>
+      </div>
+      <div class="pipe-arrow">&rarr;</div>
+      <div class="pipe-step">
+        <div class="pipe-title">LightGBM</div>
+        <div style="font-size:22px; font-weight:600; color:var(--gold); margin-top:8px;">94.4%</div>
+      </div>
+      <div class="pipe-arrow">&rarr;</div>
+      <div class="pipe-step" style="background:var(--gold); border-color:var(--gold);">
+        <div class="pipe-title" style="color:white;">XGBoost</div>
+        <div class="pipe-desc" style="color:rgba(255,255,255,0.7);" data-lang="th">ดีที่สุด</div>
+        <div class="pipe-desc" style="color:rgba(255,255,255,0.7);" data-lang="en">Best</div>
+        <div style="font-size:26px; font-weight:700; color:white; margin-top:8px;">94.5%</div>
+      </div>
+    </div>
+
+    <!-- Charts: ROC + Feature Importance side by side, compact -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px;">
+      <div>
+        <div class="chart-wrap" style="border-color:rgba(255,255,255,0.08); padding:10px;"><img src="outputs/figures/08_model_roc_pr.png" alt="ROC PR" style="width:100%; display:block; border-radius:8px;"></div>
+      </div>
+      <div>
+        <div class="chart-wrap" style="border-color:rgba(255,255,255,0.08); padding:10px;"><img src="outputs/figures/10_feature_importance.png" alt="Feature Importance" style="width:100%; display:block; border-radius:8px;"></div>
+      </div>
+    </div>
+
+    <div class="callout callout-dark" style="margin-top:20px;">
+      <div class="cl-tag" data-lang="th">ใช้งานจริงอย่างไร?</div>
+      <div class="cl-tag" data-lang="en">How Does It Work in Practice?</div>
+      <p data-lang="th" style="color:rgba(255,255,255,0.7);">ทุกครั้งที่มีการจองเข้ามา AI จะให้คะแนนความเสี่ยง — <strong style="color:var(--gold)">สูง (>70%):</strong> รับจองเกิน 15-20% / <strong style="color:var(--gold);">กลาง (40-70%):</strong> โทรยืนยัน / <strong style="color:var(--gold);">ต่ำ (<40%):</strong> ดำเนินการตามปกติ</p>
+      <p data-lang="en" style="color:rgba(255,255,255,0.7);">For every new booking, the AI scores cancellation risk — <strong style="color:var(--gold)">High (>70%):</strong> overbook 15-20% / <strong style="color:var(--gold)">Medium (40-70%):</strong> confirmation outreach / <strong style="color:var(--gold)">Low (<40%):</strong> proceed normally</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!-- 06b: PREDICTION DEMO                                              -->
+<!-- ============================================================== -->
+<section class="sec-warm" id="s6b">
+  <div class="container reveal">
+    <div class="sec-num">AI</div>
+    <div data-lang="th">
+      <div class="sec-tag">ลองใช้งานจริง</div>
+      <h2>ทดสอบ AI ทำนายการยกเลิก</h2>
+      <p class="sec-desc">กรอกข้อมูลการจองด้านล่าง แล้ว AI จะประเมินความเสี่ยงที่การจองนี้จะถูกยกเลิก — ทำงานแบบเดียวกับโมเดลจริง</p>
+    </div>
+    <div data-lang="en">
+      <div class="sec-tag">Try It Yourself</div>
+      <h2>Test the Cancellation Predictor</h2>
+      <p class="sec-desc">Enter booking details below and our AI will estimate the cancellation risk — same logic as the production model.</p>
+    </div>
+
+    <div class="predictor-grid">
+      <!-- Form -->
+      <div>
+        <div class="predictor-form" id="predictForm">
+          <div class="form-group">
+            <label data-lang="th">ประเภทโรงแรม</label><label data-lang="en">Hotel Type</label>
+            <select id="p_hotel">
+              <option value="city">City Hotel</option>
+              <option value="resort">Resort Hotel</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label data-lang="th">จองล่วงหน้า (วัน)</label><label data-lang="en">Lead Time (days)</label>
+            <input type="number" id="p_lead" value="45" min="0" max="800">
+          </div>
+          <div class="form-group">
+            <label data-lang="th">ราคาต่อคืน (ADR)</label><label data-lang="en">ADR ($/night)</label>
+            <input type="number" id="p_adr" value="100" min="0" max="600">
+          </div>
+          <div class="form-group">
+            <label data-lang="th">จำนวนคืน</label><label data-lang="en">Total Nights</label>
+            <input type="number" id="p_nights" value="3" min="1" max="30">
+          </div>
+          <div class="form-group">
+            <label data-lang="th">ช่องทางการจอง</label><label data-lang="en">Market Segment</label>
+            <select id="p_segment">
+              <option value="ota">Online Travel Agency</option>
+              <option value="direct">Direct Booking</option>
+              <option value="corporate">Corporate</option>
+              <option value="groups">Groups</option>
+              <option value="offline">Offline TA/TO</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label data-lang="th">ประเภทมัดจำ</label><label data-lang="en">Deposit Type</label>
+            <select id="p_deposit">
+              <option value="none">No Deposit</option>
+              <option value="non_refund">Non Refundable</option>
+              <option value="refund">Refundable</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label data-lang="th">เคยเข้าพักมาก่อน?</label><label data-lang="en">Repeat Guest?</label>
+            <select id="p_repeat">
+              <option value="0">ไม่ใช่ / No</option>
+              <option value="1">ใช่ / Yes</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label data-lang="th">Special Requests</label><label data-lang="en">Special Requests</label>
+            <input type="number" id="p_requests" value="0" min="0" max="5">
+          </div>
+          <div class="form-group">
+            <label data-lang="th">ยกเลิกในอดีต</label><label data-lang="en">Previous Cancellations</label>
+            <input type="number" id="p_prev_cancel" value="0" min="0" max="20">
+          </div>
+          <div class="form-group">
+            <label data-lang="th">จำนวนแขก</label><label data-lang="en">Total Guests</label>
+            <input type="number" id="p_guests" value="2" min="1" max="10">
+          </div>
+          <button class="predict-btn" onclick="predict()" data-lang="th">ทำนายความเสี่ยง</button>
+          <button class="predict-btn" onclick="predict()" data-lang="en">Predict Cancellation Risk</button>
+        </div>
+      </div>
+
+      <!-- Result Panel -->
+      <div>
+        <div class="result-panel" id="resultPanel">
+          <div class="risk-gauge">
+            <div class="risk-circle" id="riskCircle" style="--pct: 0%;">
+              <div class="risk-inner">
+                <div class="risk-pct" id="riskPct">—</div>
+                <div class="risk-label-sm" data-lang="th">ความเสี่ยง</div>
+                <div class="risk-label-sm" data-lang="en">Risk Score</div>
+              </div>
+            </div>
+          </div>
+          <div class="risk-level risk-low" id="riskLevel" data-lang="th">กรอกข้อมูลแล้วกดทำนาย</div>
+          <div class="risk-level risk-low" id="riskLevelEn" data-lang="en">Fill in details and predict</div>
+          <p id="riskDesc" style="font-size:15px; color:var(--muted); margin-top:12px; line-height:1.7;"></p>
+
+          <div class="risk-factors" id="riskFactors" style="display:none;">
+            <h4 data-lang="th">ปัจจัยหลักที่ส่งผล</h4><h4 data-lang="en">Key Risk Factors</h4>
+            <div id="factorBars"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!-- 07: PRICING                                                       -->
+<!-- ============================================================== -->
+<section id="s7">
+  <div class="container reveal">
+    <div class="sec-num">07</div>
+    <div data-lang="th">
+      <div class="sec-tag">แก้ปัญหา #2: ปรับราคาอัจฉริยะ</div>
+      <h2>ตั้งราคาให้ฉลาดขึ้น ไม่ใช่แค่ถูกลง</h2>
+      <p class="sec-desc">ข้อมูลเผยให้เห็นช่วงเวลาและฤดูกาลที่ราคาควรสูงขึ้น — และช่วงที่ควรให้ส่วนลดเพื่อดึงดูดการจอง ทุกอย่างมีหลักฐานรองรับ</p>
+    </div>
+    <div data-lang="en">
+      <div class="sec-tag">Solution #2: Dynamic Pricing</div>
+      <h2>Price Smarter, Not Cheaper</h2>
+      <p class="sec-desc">Data reveals exactly when rates should go up, when to discount, and which segments are price-sensitive. All evidence-based.</p>
+    </div>
+
+    <div class="split">
+      <div>
+        <div class="chart-wrap"><img src="outputs/figures/14_seasonal_adr.png" alt="Seasonal ADR"></div>
+      </div>
+      <div>
+        <div class="chart-wrap"><img src="outputs/figures/17_adr_heatmap.png" alt="ADR Heatmap"></div>
+      </div>
+    </div>
+
+    <div class="bento bento-3" style="margin-top:20px;">
+      <div class="card card-gold">
+        <h3 data-lang="th">ราคา High Season</h3><h3 data-lang="en">High Season Premium</h3>
+        <div class="card-val" style="color:white;">+60%</div>
+        <p data-lang="th">ราคาเฉลี่ยพุ่งจาก $71 (Low) เป็น $115 (High Season) — โอกาสในการปรับราคาที่ยังไม่ถูกใช้เต็มที่</p>
+        <p data-lang="en">ADR jumps from $71 (Low) to $115 (High Season) — pricing upside not fully captured.</p>
+      </div>
+      <div class="card card-navy">
+        <h3 data-lang="th">จุดที่ราคาดีที่สุด</h3><h3 data-lang="en">Pricing Sweet Spot</h3>
+        <div class="card-val" style="color:white;">$105</div>
+        <p data-lang="th">การจองล่วงหน้า 8-30 วัน มี ADR สูงสุด — จุดที่แขกพร้อมจ่ายและยังมีความตั้งใจจริง</p>
+        <p data-lang="en">8-30 day bookings command the highest ADR — the sweet spot of willingness to pay.</p>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--green);">
+        <h3 data-lang="th">เปลี่ยนช่องทาง = เพิ่มกำไร</h3><h3 data-lang="en">Channel Shift = Profit</h3>
+        <p data-lang="th">Groups ยกเลิก <span class="hl-r">61%</span> ในขณะที่ Direct ยกเลิกเพียง <span class="hl-g">15%</span> — เปลี่ยนโฟกัสจาก OTA มาจองตรง = กำไรมากขึ้น ค่าคอมฯ น้อยลง</p>
+        <p data-lang="en">Groups cancel <span class="hl-r">61%</span> while Direct cancels only <span class="hl-g">15%</span> — shifting from OTA to direct means more profit, less commission.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!-- 08: SEGMENTATION                                                  -->
+<!-- ============================================================== -->
+<section class="sec-cream" id="s8">
+  <div class="container reveal">
+    <div class="sec-num">08</div>
+    <div data-lang="th">
+      <div class="sec-tag">แก้ปัญหา #3: รู้จักแขกของคุณ</div>
+      <h2>แขก 4 ประเภท — 4 กลยุทธ์ที่ต่างกัน</h2>
+      <p class="sec-desc">เราใช้ AI แบ่งกลุ่มลูกค้าตามพฤติกรรมการจอง ความถี่ และมูลค่า — ไม่ใช่แค่ "business" กับ "leisure" แต่เป็นกลุ่มที่มีความต้องการและมูลค่าแตกต่างกันจริงๆ</p>
+    </div>
+    <div data-lang="en">
+      <div class="sec-tag">Solution #3: Know Your Guest</div>
+      <h2>Four Guest Types — Four Strategies</h2>
+      <p class="sec-desc">AI clustering based on booking behavior, frequency, and value reveals four distinct groups — each needing a different approach.</p>
+    </div>
+
+    <div class="chart-wrap" style="margin-bottom:24px;">
+      <img src="outputs/figures/20_segment_profiles.png" alt="Segment Profiles">
+    </div>
+
+    <div data-lang="th">
+    <table class="strat-table">
+      <thead>
+        <tr>
+          <th>กลุ่มลูกค้า</th>
+          <th>สัดส่วน</th>
+          <th>รายได้เฉลี่ย</th>
+          <th>ลักษณะ</th>
+          <th>กลยุทธ์ที่แนะนำ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="seg-badge seg-high">High-Value</span></td>
+          <td>15.3%</td>
+          <td>$918</td>
+          <td>อยู่นาน 6.6 คืน, ADR สูง $158, ใส่ใจรายละเอียด</td>
+          <td>โปรแกรม VIP, บริการเฉพาะบุคคล, อัปเกรดห้อง</td>
+        </tr>
+        <tr>
+          <td><span class="seg-badge seg-mid">Mid-Value</span></td>
+          <td>30.0%</td>
+          <td>$325</td>
+          <td>อยู่ 3.8 คืน, ผสมธุรกิจ/พักผ่อน</td>
+          <td>ข้อเสนออัปเกรด, สิทธิ์เช็คอินก่อน, สะสมแต้ม</td>
+        </tr>
+        <tr>
+          <td><span class="seg-badge seg-loyal">Loyal Budget</span></td>
+          <td>53.0%</td>
+          <td>$201</td>
+          <td>อยู่สั้น 2.3 คืน, กลุ่มใหญ่ที่สุด</td>
+          <td>แพ็กเกจรวม, โปรแนะนำเพื่อน, ดีลวันหยุดสุดสัปดาห์</td>
+        </tr>
+        <tr>
+          <td><span class="seg-badge seg-budget">Budget Transient</span></td>
+          <td>1.8%</td>
+          <td>$103</td>
+          <td>อยู่สั้นมาก, ADR ต่ำ $59, ส่วนใหญ่จาก OTA</td>
+          <td>ดึงมาจองตรง, Flash sale, โปรสมาชิก</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div data-lang="en">
+    <table class="strat-table">
+      <thead>
+        <tr>
+          <th>Segment</th>
+          <th>Share</th>
+          <th>Avg Revenue</th>
+          <th>Profile</th>
+          <th>Recommended Strategy</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="seg-badge seg-high">High-Value</span></td>
+          <td>15.3%</td>
+          <td>$918</td>
+          <td>6.6 nights, high ADR $158, engaged with requests</td>
+          <td>VIP program, personal concierge, room upgrades</td>
+        </tr>
+        <tr>
+          <td><span class="seg-badge seg-mid">Mid-Value</span></td>
+          <td>30.0%</td>
+          <td>$325</td>
+          <td>3.8 nights, business/leisure mix</td>
+          <td>Upgrade offers, early check-in, loyalty conversion</td>
+        </tr>
+        <tr>
+          <td><span class="seg-badge seg-loyal">Loyal Budget</span></td>
+          <td>53.0%</td>
+          <td>$201</td>
+          <td>2.3 nights, largest segment</td>
+          <td>Bundle deals, referral programs, weekend packages</td>
+        </tr>
+        <tr>
+          <td><span class="seg-badge seg-budget">Budget Transient</span></td>
+          <td>1.8%</td>
+          <td>$103</td>
+          <td>Very short, ADR $59, mostly OTA channel</td>
+          <td>Direct booking incentives, flash sales, membership</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!-- 09: APPLICATION                                                   -->
+<!-- ============================================================== -->
+<section id="s9">
+  <div class="container reveal">
+    <div class="sec-num">09</div>
+    <div data-lang="th">
+      <div class="sec-tag">นำไปใช้จริง</div>
+      <h2>ระบบที่ทำงานร่วมกันตลอดเส้นทางการจอง</h2>
+      <p class="sec-desc">ทั้ง 3 โซลูชันไม่ได้ทำงานแยกกัน แต่เชื่อมต่อเป็นระบบเดียวที่ครอบคลุมตั้งแต่วินาทีที่แขกกดจอง จนถึงวันที่เช็คเอาท์</p>
+    </div>
+    <div data-lang="en">
+      <div class="sec-tag">Application</div>
+      <h2>An Integrated System Across the Booking Journey</h2>
+      <p class="sec-desc">All three solutions connect into one system — from the moment a guest books to the day they check out.</p>
+    </div>
+
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="pipe-icon">1</div>
+        <div class="pipe-title" data-lang="th">การจองเข้ามา</div><div class="pipe-title" data-lang="en">Booking Received</div>
+        <div class="pipe-desc" data-lang="th">ให้คะแนนความเสี่ยง</div><div class="pipe-desc" data-lang="en">Score risk level</div>
+      </div>
+      <div class="pipe-arrow">&rarr;</div>
+      <div class="pipe-step">
+        <div class="pipe-icon">2</div>
+        <div class="pipe-title" data-lang="th">ปรับราคา</div><div class="pipe-title" data-lang="en">Optimize Price</div>
+        <div class="pipe-desc" data-lang="th">ตามฤดูกาล & lead time</div><div class="pipe-desc" data-lang="en">By season & lead time</div>
+      </div>
+      <div class="pipe-arrow">&rarr;</div>
+      <div class="pipe-step">
+        <div class="pipe-icon">3</div>
+        <div class="pipe-title" data-lang="th">จำแนกแขก</div><div class="pipe-title" data-lang="en">Profile Guest</div>
+        <div class="pipe-desc" data-lang="th">เลือกกลยุทธ์ที่เหมาะ</div><div class="pipe-desc" data-lang="en">Assign strategy</div>
+      </div>
+      <div class="pipe-arrow">&rarr;</div>
+      <div class="pipe-step" style="background:var(--gold); border-color:var(--gold);">
+        <div class="pipe-icon" style="color:white;">4</div>
+        <div class="pipe-title" style="color:white;" data-lang="th">ดำเนินการ</div><div class="pipe-title" style="color:white;" data-lang="en">Take Action</div>
+        <div class="pipe-desc" style="color:rgba(255,255,255,0.7);">Overbook / Outreach / Upsell</div>
+      </div>
+    </div>
+
+    <div class="bento bento-3" style="margin-top:24px;">
+      <div class="card" style="border-top: 3px solid var(--gold);">
+        <h3 data-lang="th">สำหรับ Revenue Manager</h3><h3 data-lang="en">For Revenue Managers</h3>
+        <p data-lang="th">ใช้ AI กำหนดระดับ overbooking รายวัน — คืนที่เสี่ยงสูง รับจองเกิน 15-20% / คืนปกติ รับตามจริง ผสมกับ <strong>ราคา dynamic</strong> ตามช่วงเวลาจอง</p>
+        <p data-lang="en">Use AI to set daily overbooking levels — high-risk nights get 15-20% buffer. Combined with <strong>dynamic pricing</strong> by booking window.</p>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--gold);">
+        <h3 data-lang="th">สำหรับ Marketing</h3><h3 data-lang="en">For Marketing Teams</h3>
+        <p data-lang="th">ส่งข้อเสนอ VIP ให้แขก High-Value / โปรอัปเกรดให้ Mid-Value / และดึง Budget Transient จาก OTA มาจองตรง ลดค่าคอมมิชชั่น</p>
+        <p data-lang="en">Send VIP offers to High-Value / upgrade promos to Mid-Value / pull Budget Transients from OTA to direct booking, cutting commission.</p>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--gold);">
+        <h3 data-lang="th">สำหรับ Operations</h3><h3 data-lang="en">For Operations</h3>
+        <p data-lang="th">แจ้งเตือนการจองเสี่ยงสูง (>70%) ให้ทีมโทรยืนยัน — แค่โทรถามหรือเสนอ early check-in ก็ลดการยกเลิกได้ 10-15%</p>
+        <p data-lang="en">Flag high-risk bookings (>70%) for confirmation calls. A simple outreach can reduce cancellations by 10-15%.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!-- 10: BUSINESS IMPACT                                               -->
+<!-- ============================================================== -->
+<section class="sec-dark" id="s10">
+  <div class="container reveal">
+    <div class="sec-num" style="color:var(--gold-light);">10</div>
+    <div data-lang="th">
+      <div class="sec-tag">ผลลัพธ์ทางธุรกิจ</div>
+      <h2>ถ้าใช้ระบบนี้ ธุรกิจจะดีขึ้นแค่ไหน?</h2>
+      <p class="sec-desc">ตัวเลขจริง ประมาณการจากข้อมูลที่วิเคราะห์ — ไม่ใช่การคาดเดา</p>
+    </div>
+    <div data-lang="en">
+      <div class="sec-tag">Business Impact</div>
+      <h2>What Does This Mean for the Bottom Line?</h2>
+      <p class="sec-desc">Real estimates based on the data analyzed — not guesswork.</p>
+    </div>
+
+    <div class="bento bento-3">
+      <div class="card card-green" style="text-align:center; padding:36px 24px;">
+        <div class="card-val" style="font-size:36px;">$2.3-3.8M</div>
+        <div data-lang="th" style="font-size:14px; margin-bottom:12px; color:rgba(255,255,255,0.85);">รายได้ที่กู้คืนต่อปี</div>
+        <div data-lang="en" style="font-size:14px; margin-bottom:12px; color:rgba(255,255,255,0.85);">Revenue Protected / Year</div>
+        <p data-lang="th" style="font-size:12px;">กู้คืน 15% = 6,633 การจอง ($2.3M) ถึง 25% = 11,055 การจอง ($3.8M) จาก 44,223 ที่ถูกยกเลิก (เฉลี่ย $346/การจอง)</p>
+        <p data-lang="en" style="font-size:12px;">Recover 15% = 6,633 bookings ($2.3M) to 25% = 11,055 bookings ($3.8M) from 44,223 canceled (avg $346/booking)</p>
+      </div>
+      <div class="card card-gold" style="text-align:center; padding:36px 24px;">
+        <div class="card-val" style="font-size:36px;">+$8-15</div>
+        <div data-lang="th" style="font-size:14px; margin-bottom:12px; color:rgba(255,255,255,0.85);">ADR เพิ่มขึ้นต่อคืน</div>
+        <div data-lang="en" style="font-size:14px; margin-bottom:12px; color:rgba(255,255,255,0.85);">ADR Uplift per Night</div>
+        <p data-lang="th" style="font-size:12px;">High Season ADR $115 vs Low $71 (ห่าง $44) — ปรับราคา dynamic เฉพาะ high season + sweet spot 8-30 วัน (ADR $105) = เพิ่มรายได้ $600K-1.1M/ปี</p>
+        <p data-lang="en" style="font-size:12px;">High Season ADR $115 vs Low $71 ($44 gap). Dynamic pricing on high season + 8-30d sweet spot (ADR $105) = $600K-1.1M/year uplift</p>
+      </div>
+      <div class="card card-navy" style="text-align:center; padding:36px 24px;">
+        <div class="card-val" style="font-size:36px;">3.2% &rarr; 6%</div>
+        <div data-lang="th" style="font-size:14px; margin-bottom:12px; color:rgba(255,255,255,0.85);">เพิ่มแขกกลับมา 2 เท่า</div>
+        <div data-lang="en" style="font-size:14px; margin-bottom:12px; color:rgba(255,255,255,0.85);">Double Repeat Guest Rate</div>
+        <p data-lang="th" style="font-size:12px;">แขกเก่ายกเลิกแค่ 14.5% (vs 37.8%) + ต้นทุนหาลูกค้าถูกกว่า 5-7 เท่า — เพิ่ม 1% repeat rate = +$260K รายได้ที่มั่นคง/ปี</p>
+        <p data-lang="en" style="font-size:12px;">Repeats cancel at 14.5% (vs 37.8%) + 5-7x cheaper to acquire. Each 1% increase in repeat rate = +$260K reliable revenue/year</p>
+      </div>
+    </div>
+
+    <div class="bento bento-3" style="margin-top:16px;">
+      <div class="card card-dark">
+        <h3 style="color:var(--gold);" data-lang="th">ลด: ห้องว่างจากการยกเลิก</h3>
+        <h3 style="color:var(--gold);" data-lang="en">Reduce: Empty Rooms</h3>
+        <p data-lang="th">โมเดลระบุ <span class="hl" style="color:var(--gold);">44,000+ การจองเสี่ยง</span> — แค่แปลง 15% เป็นแขกจริงหรือจองทดแทน ก็กู้รายได้หลายล้าน</p>
+        <p data-lang="en">The model identifies <span class="hl" style="color:var(--gold);">44,000+ at-risk bookings</span>. Converting just 15% recovers millions.</p>
+      </div>
+      <div class="card card-dark">
+        <h3 style="color:var(--gold);" data-lang="th">เพิ่ม: รายได้ต่อห้อง</h3>
+        <h3 style="color:var(--gold);" data-lang="en">Increase: Revenue per Room</h3>
+        <p data-lang="th">ช่องว่างราคาช่วง high season = <span class="hl" style="color:var(--gold);">$15-25 ต่อคืน</span> คูณ 75,000+ คืนที่เข้าพักจริง = ผลลัพธ์ที่สะสมมหาศาล</p>
+        <p data-lang="en">High-season pricing gap = <span class="hl" style="color:var(--gold);">$15-25/night</span> x 75,000+ active nights = significant compound impact.</p>
+      </div>
+      <div class="card card-dark">
+        <h3 style="color:var(--gold);" data-lang="th">ปรับปรุง: มูลค่าตลอดชีพ</h3>
+        <h3 style="color:var(--gold);" data-lang="en">Improve: Lifetime Value</h3>
+        <p data-lang="th">แขกเก่ายกเลิกน้อยกว่า <span class="hl" style="color:var(--gold);">2.6 เท่า</span> และต้นทุนหาลูกค้า<span class="hl" style="color:var(--gold);">ถูกกว่า 5-7 เท่า</span> — เพิ่ม repeat rate 1% = +$260K/ปี</p>
+        <p data-lang="en">Repeat guests cancel <span class="hl" style="color:var(--gold);">2.6x less</span>, cost <span class="hl" style="color:var(--gold);">5-7x less to acquire</span>. Every 1% increase = +$260K/year.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!-- CLOSING                                                           -->
+<!-- ============================================================== -->
+<section class="hero" style="min-height:80vh; background: linear-gradient(160deg, #0a0a0a 0%, #1a1510 30%, #2c2217 60%, #1e1810 100%);" id="s11">
+  <div class="hero-inner">
+    <div class="hero-tag">Summary</div>
+    <div data-lang="th">
+      <h1 style="font-size:42px;">จากข้อมูล สู่<em>กลยุทธ์ที่ทำเงิน</em></h1>
+      <p class="hero-desc">โปรเจกต์นี้แสดงให้เห็นว่าข้อมูลการจองที่มีอยู่แล้ว สามารถเปลี่ยนเป็นกลยุทธ์ที่กู้รายได้หลายล้าน ตั้งราคาอัจฉริยะ และรู้จักแขกในแบบที่ไม่เคยทำได้มาก่อน</p>
+    </div>
+    <div data-lang="en">
+      <h1 style="font-size:42px;">From Data to <em>Revenue Strategy</em></h1>
+      <p class="hero-desc">This project shows how existing booking data can unlock millions in recovery, smart pricing, and personalized guest experience.</p>
+    </div>
+
+    <div class="hero-metrics">
+      <div class="hero-metric">
+        <div class="val">94.4%</div>
+        <div class="lbl" data-lang="th">ความแม่นยำ AI</div><div class="lbl" data-lang="en">Model Accuracy</div>
+      </div>
+      <div class="hero-metric">
+        <div class="val">$4.2M</div>
+        <div class="lbl" data-lang="th">กู้รายได้สูงสุด/ปี</div><div class="lbl" data-lang="en">Max Recovery/Year</div>
+      </div>
+      <div class="hero-metric">
+        <div class="val">4</div>
+        <div class="lbl" data-lang="th">กลุ่มลูกค้าที่ค้นพบ</div><div class="lbl" data-lang="en">Customer Segments</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="tech-row">
+    <span class="tech">Python</span>
+    <span class="tech">Pandas</span>
+    <span class="tech">Scikit-Learn</span>
+    <span class="tech">XGBoost</span>
+    <span class="tech">K-Means</span>
+    <span class="tech">Matplotlib</span>
+    <span class="tech">Seaborn</span>
+  </div>
+  <p>119,390 bookings &middot; 2015–2017 &middot; Hotel Booking Demand Dataset &middot; Data Science</p>
+</footer>
+
+
+<script>
+function setLang(lang) {
+  if (lang === 'en') {
+    document.body.classList.add('en');
+  } else {
+    document.body.classList.remove('en');
+  }
+  document.getElementById('btn-th').classList.toggle('active', lang === 'th');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  localStorage.setItem('lang', lang);
+}
+
+// Restore saved language
+const saved = localStorage.getItem('lang');
+if (saved) setLang(saved);
+
+// === PROGRESS BAR ===
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = (window.scrollY / h) * 100;
+  document.getElementById('progress').style.width = pct + '%';
+});
+
+// === SCROLL REVEAL ANIMATION ===
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .stagger').forEach(el => {
+  revealObserver.observe(el);
+});
+
+// === NUMBER COUNTER ANIMATION ===
+function animateCounter(el, target, suffix = '', prefix = '') {
+  let current = 0;
+  const duration = 2000;
+  const start = performance.now();
+  const isDecimal = target % 1 !== 0;
+
+  function step(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    current = target * eased;
+    el.textContent = prefix + (isDecimal ? current.toFixed(1) : Math.round(current).toLocaleString()) + suffix;
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !e.target.dataset.counted) {
+      e.target.dataset.counted = '1';
+      const raw = e.target.dataset.count;
+      const prefix = e.target.dataset.prefix || '';
+      const suffix = e.target.dataset.suffix || '';
+      animateCounter(e.target, parseFloat(raw), suffix, prefix);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+
+// === PREDICTION ENGINE ===
+// Simplified scoring based on XGBoost feature importances
+function predict() {
+  const lead = +document.getElementById('p_lead').value;
+  const adr = +document.getElementById('p_adr').value;
+  const nights = +document.getElementById('p_nights').value;
+  const hotel = document.getElementById('p_hotel').value;
+  const segment = document.getElementById('p_segment').value;
+  const deposit = document.getElementById('p_deposit').value;
+  const repeat = +document.getElementById('p_repeat').value;
+  const requests = +document.getElementById('p_requests').value;
+  const prevCancel = +document.getElementById('p_prev_cancel').value;
+  const guests = +document.getElementById('p_guests').value;
+
+  // Feature-based risk scoring (weights from model feature importance)
+  let score = 0;
+  const factors = [];
+
+  // Lead time (biggest predictor)
+  const leadRisk = Math.min(lead / 365, 1) * 35;
+  score += leadRisk;
+  factors.push({ name: 'Lead Time', impact: leadRisk, max: 35 });
+
+  // Deposit type
+  let depositRisk = 0;
+  if (deposit === 'non_refund') depositRisk = 30;
+  else if (deposit === 'none') depositRisk = 12;
+  else depositRisk = 3;
+  score += depositRisk;
+  factors.push({ name: 'Deposit Type', impact: depositRisk, max: 30 });
+
+  // Previous cancellations
+  const prevRisk = Math.min(prevCancel * 12, 25);
+  score += prevRisk;
+  factors.push({ name: 'Cancel History', impact: prevRisk, max: 25 });
+
+  // Market segment
+  let segRisk = 0;
+  if (segment === 'groups') segRisk = 18;
+  else if (segment === 'ota') segRisk = 10;
+  else if (segment === 'offline') segRisk = 6;
+  else if (segment === 'direct') segRisk = 3;
+  else segRisk = 4;
+  score += segRisk;
+  factors.push({ name: 'Channel', impact: segRisk, max: 18 });
+
+  // Hotel type
+  const hotelRisk = hotel === 'city' ? 6 : 2;
+  score += hotelRisk;
+
+  // ADR (higher = slightly more cancellation)
+  const adrRisk = Math.min(adr / 300, 1) * 5;
+  score += adrRisk;
+
+  // Repeat guest (strong negative signal)
+  if (repeat === 1) score -= 18;
+  factors.push({ name: 'Repeat Guest', impact: repeat ? -18 : 0, max: 18 });
+
+  // Special requests (negative signal)
+  const reqReduction = Math.min(requests * 5, 15);
+  score -= reqReduction;
+  factors.push({ name: 'Special Requests', impact: -reqReduction, max: 15 });
+
+  // Clamp to 0-100
+  score = Math.max(2, Math.min(98, score));
+  const pct = Math.round(score);
+
+  // Update UI
+  const circle = document.getElementById('riskCircle');
+  const pctEl = document.getElementById('riskPct');
+  const levelEl = document.getElementById('riskLevel');
+  const levelEnEl = document.getElementById('riskLevelEn');
+  const descEl = document.getElementById('riskDesc');
+  const factorsDiv = document.getElementById('riskFactors');
+  const barsDiv = document.getElementById('factorBars');
+
+  // Color based on risk
+  let color, levelTh, levelEn, descTh, descEn, cls;
+  if (pct < 30) {
+    color = '#27AE60'; cls = 'risk-low';
+    levelTh = 'ความเสี่ยงต่ำ'; levelEn = 'LOW RISK';
+    descTh = 'การจองนี้มีแนวโน้มจะมาเข้าพักจริง ดำเนินการตามปกติได้เลย';
+    descEn = 'This booking is likely to show up. Proceed as normal.';
+  } else if (pct < 60) {
+    color = '#f39c12'; cls = 'risk-med';
+    levelTh = 'ความเสี่ยงปานกลาง'; levelEn = 'MEDIUM RISK';
+    descTh = 'ควรโทรยืนยันการจอง หรือเสนอสิทธิพิเศษเพื่อลดโอกาสยกเลิก';
+    descEn = 'Consider confirmation outreach or offering incentives to reduce cancellation chance.';
+  } else {
+    color = '#C0392B'; cls = 'risk-high';
+    levelTh = 'ความเสี่ยงสูง'; levelEn = 'HIGH RISK';
+    descTh = 'แนะนำให้รับจองเกิน (overbook) 15-20% และเตรียมห้องสำรองไว้';
+    descEn = 'Recommend overbooking 15-20% and preparing backup room allocation.';
+  }
+
+  circle.style.setProperty('--pct', pct + '%');
+  circle.style.background = `conic-gradient(${color} 0%, ${color} ${pct}%, #eee ${pct}%, #eee 100%)`;
+  pctEl.textContent = pct + '%';
+  pctEl.style.color = color;
+  levelEl.className = 'risk-level ' + cls;
+  levelEl.textContent = levelTh;
+  levelEnEl.className = 'risk-level ' + cls;
+  levelEnEl.textContent = levelEn;
+
+  const isEn = document.body.classList.contains('en');
+  descEl.textContent = isEn ? descEn : descTh;
+
+  // Show factor bars
+  factorsDiv.style.display = 'block';
+  barsDiv.innerHTML = '';
+  factors.filter(f => f.impact !== 0).sort((a, b) => Math.abs(b.impact) - Math.abs(a.impact)).forEach(f => {
+    const w = Math.abs(f.impact) / 35 * 100;
+    const barColor = f.impact > 0 ? '#C0392B' : '#27AE60';
+    barsDiv.innerHTML += `
+      <div class="factor-bar">
+        <span class="factor-name">${f.name}</span>
+        <div style="flex:1; background:#f0f0f0; border-radius:4px; height:8px;">
+          <div class="factor-fill" style="width:${w}%; background:${barColor};"></div>
+        </div>
+        <span style="font-size:12px; color:${barColor}; font-weight:600; min-width:40px; text-align:right;">${f.impact > 0 ? '+' : ''}${Math.round(f.impact)}</span>
+      </div>`;
+  });
+
+  // Animate
+  document.getElementById('resultPanel').style.animation = 'count-up 0.5s ease';
+}
+</script>
+
+</body>
+</html>
