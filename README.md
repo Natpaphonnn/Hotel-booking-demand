@@ -8,6 +8,8 @@
 ![XGBoost](https://img.shields.io/badge/XGBoost-Gradient%20Boosting-red)
 ![Seaborn](https://img.shields.io/badge/Seaborn-Visualization-9B59B6)
 
+[![Presentation](https://img.shields.io/badge/Presentation-View%20Slides-FF2800?style=for-the-badge)](https://natpaphonnn.github.io/Hotel-booking-demand/presentation.html)
+
 ---
 
 ## Business Problem
