@@ -331,6 +331,89 @@
     section { padding: 70px 0; }
     .hero-grid { grid-template-columns: repeat(2, 1fr); }
   }
+
+  /* === MOBILE (max-width: 600px) === */
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 26px; }
+    .hero-desc { font-size: 14px; margin-bottom: 28px; }
+    .hero-big .big-num { font-size: 52px; letter-spacing: -1px; }
+    .hero-big .big-label { font-size: 12px; letter-spacing: 2px; }
+    .hero-tag { font-size: 10px; padding: 6px 16px; letter-spacing: 2px; margin-bottom: 20px; }
+    h2 { font-size: 24px; }
+    .sec-num { font-size: 48px; margin-bottom: -24px; }
+    .sec-tag { font-size: 11px; letter-spacing: 2px; }
+    .sec-desc { font-size: 15px; }
+    section { padding: 50px 0; }
+    .container { padding: 0 16px; }
+
+    /* Hero grid — single column on mobile */
+    .hero-grid { grid-template-columns: 1fr !important; max-width: 100%; gap: 10px; }
+    .hero-card { padding: 16px 14px; }
+    .hero-card .hc-val { font-size: 28px; }
+    .hero-card .hc-label { font-size: 10px; }
+
+    /* Hero metrics */
+    .hero-metrics { gap: 16px; flex-direction: column; align-items: center; }
+    .hero-metric .val { font-size: 28px; }
+    .hero-metric .lbl { font-size: 11px; }
+
+    /* Cards */
+    .card { padding: 20px 16px; }
+    .card-val { font-size: 28px; }
+    .card-sub { font-size: 13px; }
+    .card-label { font-size: 11px; letter-spacing: 1.5px; }
+    .card h3 { font-size: 17px; }
+    .card p { font-size: 14px; }
+
+    /* Bento grids — all single column */
+    .bento-2x2, .bento-3, .bento-hero, .bento-hero-r, .bento-mixed { grid-template-columns: 1fr; }
+    .bento-mixed .span-2 { grid-column: span 1; }
+
+    /* Split sections */
+    .split { grid-template-columns: 1fr; gap: 20px; }
+    .split-text h2 { font-size: 24px; }
+    .split-text p { font-size: 14px; }
+
+    /* Pipeline */
+    .pipeline { flex-direction: column; }
+    .pipe-step { padding: 20px 16px; }
+    .pipe-step:first-child { border-radius: 14px 14px 0 0; }
+    .pipe-step:last-child { border-radius: 0 0 14px 14px; }
+    .pipe-arrow { justify-content: center; padding: 4px; border-left: 1px solid var(--border); border-right: 1px solid var(--border); border-top: none; border-bottom: none; }
+    .pipe-step .pipe-title { font-size: 13px; }
+    .pipe-step .pipe-desc { font-size: 11px; }
+
+    /* Table */
+    .strat-table { font-size: 12px; }
+    .strat-table th { padding: 10px 8px; font-size: 10px; }
+    .strat-table td { padding: 10px 8px; font-size: 12px; }
+
+    /* Predictor */
+    .predictor-grid { grid-template-columns: 1fr; gap: 20px; }
+    .predictor-form { grid-template-columns: 1fr; }
+    .predict-btn { grid-column: span 1; font-size: 15px; padding: 14px; }
+    .result-panel { padding: 24px 16px; position: static; }
+    .risk-gauge { width: 160px; height: 160px; }
+    .risk-circle { width: 160px; height: 160px; }
+    .risk-inner { width: 120px; height: 120px; }
+    .risk-pct { font-size: 36px; }
+    .factor-name { font-size: 11px; min-width: 90px; }
+
+    /* Callout */
+    .callout { padding: 16px 18px; }
+    .callout p { font-size: 14px; }
+
+    /* Lang toggle */
+    .lang-toggle { top: 12px; right: 12px; }
+    .lang-btn { padding: 6px 12px; font-size: 11px; }
+
+    /* Footer */
+    .footer { padding: 40px 16px; font-size: 12px; }
+    .footer .tech { padding: 6px 12px; font-size: 11px; }
+
+    /* Scroll cue */
+    .scroll-cue { font-size: 9px; bottom: 20px; }
+  }
 </style>
 </head>
 <body>
