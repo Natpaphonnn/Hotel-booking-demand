@@ -911,123 +911,13 @@
 
 
 <!-- ============================================================== -->
-<!-- SLIDE 7: CANCELLATION RISK PREDICTOR                           -->
+<!-- SLIDE 7: PROFITABILITY ANALYSIS                                 -->
 <!-- ============================================================== -->
-<section class="sec-light" id="slide7">
-  <div class="container">
-    <div class="reveal">
-      <div class="slide-num">07 / 08</div>
-      <div data-lang="th">
-        <h2>ลองทำนายเอง: Cancellation Risk Predictor</h2>
-        <p class="sec-desc">จำลองการทำนายจากโมเดล XGBoost — กรอกข้อมูลการจองแล้วดูว่าระบบ AI จะประเมินความเสี่ยงอย่างไร พร้อมปัจจัยที่ส่งผลมากที่สุดและคำแนะนำ</p>
-      </div>
-      <div data-lang="en">
-        <h2>Try It Yourself: Cancellation Risk Predictor</h2>
-        <p class="sec-desc">Simulated prediction based on the XGBoost model — enter booking details to see how the AI system would assess cancellation risk, top contributing factors, and recommendations.</p>
-      </div>
-    </div>
-
-    <div class="predictor-container reveal">
-      <form class="predictor-form" onsubmit="event.preventDefault(); predict();">
-        <div class="form-group">
-          <label><span data-lang="th">ประเภทโรงแรม</span><span data-lang="en">Hotel Type</span></label>
-          <span class="field-tag">hotel_type</span>
-          <div class="seg-group" data-field="p-hotel">
-            <button type="button" class="seg-btn active" data-value="city">&#127963; City Hotel</button>
-            <button type="button" class="seg-btn" data-value="resort">&#127965; Resort Hotel</button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Lead Time</label>
-          <span class="field-tag">lead_time</span>
-          <input type="number" id="p-lead" value="90" min="0" max="800" step="1">
-          <div class="form-desc"><span data-lang="th">จองล่วงหน้ากี่วัน (0–800)</span><span data-lang="en">Days booked in advance (0–800)</span></div>
-        </div>
-        <div class="form-group">
-          <label><span data-lang="th">ADR (ราคาห้อง/คืน)</span><span data-lang="en">ADR (Rate/Night)</span></label>
-          <span class="field-tag">adr</span>
-          <input type="number" id="p-adr" value="100" min="0" max="600" step="1">
-          <div class="form-desc"><span data-lang="th">ราคาเฉลี่ยต่อคืน $0–600</span><span data-lang="en">Average daily rate $0–600</span></div>
-        </div>
-        <div class="form-group">
-          <label><span data-lang="th">จำนวนคืน</span><span data-lang="en">Total Nights</span></label>
-          <span class="field-tag">stays_total</span>
-          <input type="number" id="p-nights" value="3" min="1" max="30" step="1">
-          <div class="form-desc"><span data-lang="th">รวม weeknight + weekend (1–30)</span><span data-lang="en">Weeknight + weekend combined (1–30)</span></div>
-        </div>
-        <div class="form-group form-group-full">
-          <label>Market Segment</label>
-          <span class="field-tag">market_segment</span>
-          <div class="seg-group" data-field="p-segment">
-            <button type="button" class="seg-btn" data-value="direct">&#128100; Direct</button>
-            <button type="button" class="seg-btn" data-value="corporate">&#127970; Corporate</button>
-            <button type="button" class="seg-btn active" data-value="online_ta">&#127760; Online TA</button>
-            <button type="button" class="seg-btn" data-value="offline_ta">&#128222; Offline TA</button>
-            <button type="button" class="seg-btn" data-value="groups">&#128101; Groups</button>
-          </div>
-          <div class="form-desc"><span data-lang="th">ช่องทางการจอง</span><span data-lang="en">Booking channel</span></div>
-        </div>
-        <div class="form-group form-group-full">
-          <label>Deposit Type</label>
-          <span class="field-tag">deposit_type</span>
-          <div class="seg-group" data-field="p-deposit">
-            <button type="button" class="seg-btn active" data-value="no_deposit">No Deposit</button>
-            <button type="button" class="seg-btn" data-value="non_refund">Non Refund</button>
-            <button type="button" class="seg-btn" data-value="refundable">Refundable</button>
-          </div>
-          <div class="form-desc"><span data-lang="th">ประเภทมัดจำ</span><span data-lang="en">Deposit type</span></div>
-        </div>
-        <div class="form-group form-group-full">
-          <label>Special Requests</label>
-          <span class="field-tag">total_of_special_requests</span>
-          <div class="form-desc" style="margin-bottom:4px;"><span data-lang="th">เลือกคำขอพิเศษที่ต้องการ</span><span data-lang="en">Select desired special requests</span></div>
-          <div class="checkbox-grid">
-            <label class="check-item"><input type="checkbox" class="req-check"><span class="check-icon">&#10003;</span><span><span data-lang="th">&#128716; Extra Bed / เตียงเสริม</span><span data-lang="en">&#128716; Extra Bed</span></span></label>
-            <label class="check-item"><input type="checkbox" class="req-check"><span class="check-icon">&#10003;</span><span><span data-lang="th">&#127961; High Floor / ห้องชั้นสูง</span><span data-lang="en">&#127961; High Floor</span></span></label>
-            <label class="check-item"><input type="checkbox" class="req-check"><span class="check-icon">&#10003;</span><span><span data-lang="th">&#9200; Early Check-in / เช็คอินก่อนเวลา</span><span data-lang="en">&#9200; Early Check-in</span></span></label>
-            <label class="check-item"><input type="checkbox" class="req-check"><span class="check-icon">&#10003;</span><span><span data-lang="th">&#127769; Late Check-out / เช็คเอาท์ช้า</span><span data-lang="en">&#127769; Late Check-out</span></span></label>
-            <label class="check-item"><input type="checkbox" class="req-check"><span class="check-icon">&#10003;</span><span><span data-lang="th">&#127754; Sea View / วิวทะเล</span><span data-lang="en">&#127754; Sea View</span></span></label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Previous Cancellations</label>
-          <span class="field-tag">previous_cancellations</span>
-          <input type="number" id="p-prevcancel" value="0" min="0" max="20" step="1">
-          <div class="form-desc"><span data-lang="th">ประวัติยกเลิกของแขก (0–20 ครั้ง)</span><span data-lang="en">Guest's cancellation history (0–20 times)</span></div>
-        </div>
-        <button type="submit" class="predict-btn">
-          <span class="btn-icon">&gt;_</span><span data-lang="th">ทำนายความเสี่ยง</span><span data-lang="en">Predict Risk</span>
-        </button>
-      </form>
-
-      <div class="result-panel" id="predictResult">
-        <div class="result-top">
-          <div class="risk-circle" id="riskCircle"><span id="riskPct">0%</span></div>
-          <div class="risk-info">
-            <div class="risk-badge" id="riskBadge"></div>
-            <h3 id="riskTitle"></h3>
-            <p id="riskDesc" style="font-size:14px; color:var(--muted); line-height:1.6;"></p>
-          </div>
-        </div>
-        <div class="factor-bars">
-          <h4><span data-lang="th">ปัจจัยที่ส่งผลมากที่สุด</span><span data-lang="en">Top Contributing Factors</span></h4>
-          <div id="factorBarsContainer"></div>
-        </div>
-        <div class="recommendation-box" id="recommendBox"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- ============================================================== -->
-<!-- SLIDE 8: PROFITABILITY ANALYSIS                                 -->
-<!-- ============================================================== -->
-<section class="sec-dark" id="slide8">
+<section class="sec-dark" id="slide7">
   <div class="container">
     <!-- A: Headline -->
     <div class="reveal">
-      <div class="slide-num" style="color:rgba(255,255,255,0.3);">08 / 08</div>
+      <div class="slide-num" style="color:rgba(255,255,255,0.3);">07 / 08</div>
       <div data-lang="th">
         <h2>Profitability Analysis: เปลี่ยนยอดจองให้เป็นกำไรสุทธิ</h2>
         <p class="sec-desc">Gross Revenue ไม่ใช่เงินที่เข้ากระเป๋าจริง — เมื่อหักคอมมิชชั่น OTA และต้นทุนการยกเลิก Direct Booking สร้างกำไรสุทธิสูงกว่าถึง 2 เท่า</p>
@@ -1149,6 +1039,116 @@
         <p data-lang="en" style="max-width:700px; margin:8px auto 0; font-size:16px; line-height:1.8; color:rgba(255,255,255,0.7);">
           "Revenue growth means nothing if it doesn't reach the bottom line — Data-Driven Revenue Management turns every booking dollar into real, measurable profit."
         </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!-- SLIDE 8: CANCELLATION RISK PREDICTOR (Interactive Demo)         -->
+<!-- ============================================================== -->
+<section class="sec-light" id="slide8">
+  <div class="container">
+    <div class="reveal">
+      <div class="slide-num">08 / 08</div>
+      <div data-lang="th">
+        <h2>ลองทำนายเอง: Cancellation Risk Predictor</h2>
+        <p class="sec-desc">จำลองการทำนายจากโมเดล XGBoost — กรอกข้อมูลการจองแล้วดูว่าระบบ AI จะประเมินความเสี่ยงอย่างไร พร้อมปัจจัยที่ส่งผลมากที่สุดและคำแนะนำ</p>
+      </div>
+      <div data-lang="en">
+        <h2>Try It Yourself: Cancellation Risk Predictor</h2>
+        <p class="sec-desc">Simulated prediction based on the XGBoost model — enter booking details to see how the AI system would assess cancellation risk, top contributing factors, and recommendations.</p>
+      </div>
+    </div>
+
+    <div class="predictor-container reveal">
+      <form class="predictor-form" onsubmit="event.preventDefault(); predict();">
+        <div class="form-group">
+          <label><span data-lang="th">ประเภทโรงแรม</span><span data-lang="en">Hotel Type</span></label>
+          <span class="field-tag">hotel_type</span>
+          <div class="seg-group" data-field="p-hotel">
+            <button type="button" class="seg-btn active" data-value="city">&#127963; City Hotel</button>
+            <button type="button" class="seg-btn" data-value="resort">&#127965; Resort Hotel</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Lead Time</label>
+          <span class="field-tag">lead_time</span>
+          <input type="number" id="p-lead" value="90" min="0" max="800" step="1">
+          <div class="form-desc"><span data-lang="th">จองล่วงหน้ากี่วัน (0–800)</span><span data-lang="en">Days booked in advance (0–800)</span></div>
+        </div>
+        <div class="form-group">
+          <label><span data-lang="th">ADR (ราคาห้อง/คืน)</span><span data-lang="en">ADR (Rate/Night)</span></label>
+          <span class="field-tag">adr</span>
+          <input type="number" id="p-adr" value="100" min="0" max="600" step="1">
+          <div class="form-desc"><span data-lang="th">ราคาเฉลี่ยต่อคืน $0–600</span><span data-lang="en">Average daily rate $0–600</span></div>
+        </div>
+        <div class="form-group">
+          <label><span data-lang="th">จำนวนคืน</span><span data-lang="en">Total Nights</span></label>
+          <span class="field-tag">stays_total</span>
+          <input type="number" id="p-nights" value="3" min="1" max="30" step="1">
+          <div class="form-desc"><span data-lang="th">รวม weeknight + weekend (1–30)</span><span data-lang="en">Weeknight + weekend combined (1–30)</span></div>
+        </div>
+        <div class="form-group form-group-full">
+          <label>Market Segment</label>
+          <span class="field-tag">market_segment</span>
+          <div class="seg-group" data-field="p-segment">
+            <button type="button" class="seg-btn" data-value="direct">&#128100; Direct</button>
+            <button type="button" class="seg-btn" data-value="corporate">&#127970; Corporate</button>
+            <button type="button" class="seg-btn active" data-value="online_ta">&#127760; Online TA</button>
+            <button type="button" class="seg-btn" data-value="offline_ta">&#128222; Offline TA</button>
+            <button type="button" class="seg-btn" data-value="groups">&#128101; Groups</button>
+          </div>
+          <div class="form-desc"><span data-lang="th">ช่องทางการจอง</span><span data-lang="en">Booking channel</span></div>
+        </div>
+        <div class="form-group form-group-full">
+          <label>Deposit Type</label>
+          <span class="field-tag">deposit_type</span>
+          <div class="seg-group" data-field="p-deposit">
+            <button type="button" class="seg-btn active" data-value="no_deposit">No Deposit</button>
+            <button type="button" class="seg-btn" data-value="non_refund">Non Refund</button>
+            <button type="button" class="seg-btn" data-value="refundable">Refundable</button>
+          </div>
+          <div class="form-desc"><span data-lang="th">ประเภทมัดจำ</span><span data-lang="en">Deposit type</span></div>
+        </div>
+        <div class="form-group form-group-full">
+          <label>Special Requests</label>
+          <span class="field-tag">total_of_special_requests</span>
+          <div class="form-desc" style="margin-bottom:4px;"><span data-lang="th">เลือกคำขอพิเศษที่ต้องการ</span><span data-lang="en">Select desired special requests</span></div>
+          <div class="checkbox-grid">
+            <label class="check-item"><input type="checkbox" class="req-check"><span class="check-icon">&#10003;</span><span><span data-lang="th">&#128716; Extra Bed / เตียงเสริม</span><span data-lang="en">&#128716; Extra Bed</span></span></label>
+            <label class="check-item"><input type="checkbox" class="req-check"><span class="check-icon">&#10003;</span><span><span data-lang="th">&#127961; High Floor / ห้องชั้นสูง</span><span data-lang="en">&#127961; High Floor</span></span></label>
+            <label class="check-item"><input type="checkbox" class="req-check"><span class="check-icon">&#10003;</span><span><span data-lang="th">&#9200; Early Check-in / เช็คอินก่อนเวลา</span><span data-lang="en">&#9200; Early Check-in</span></span></label>
+            <label class="check-item"><input type="checkbox" class="req-check"><span class="check-icon">&#10003;</span><span><span data-lang="th">&#127769; Late Check-out / เช็คเอาท์ช้า</span><span data-lang="en">&#127769; Late Check-out</span></span></label>
+            <label class="check-item"><input type="checkbox" class="req-check"><span class="check-icon">&#10003;</span><span><span data-lang="th">&#127754; Sea View / วิวทะเล</span><span data-lang="en">&#127754; Sea View</span></span></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Previous Cancellations</label>
+          <span class="field-tag">previous_cancellations</span>
+          <input type="number" id="p-prevcancel" value="0" min="0" max="20" step="1">
+          <div class="form-desc"><span data-lang="th">ประวัติยกเลิกของแขก (0–20 ครั้ง)</span><span data-lang="en">Guest's cancellation history (0–20 times)</span></div>
+        </div>
+        <button type="submit" class="predict-btn">
+          <span class="btn-icon">&gt;_</span><span data-lang="th">ทำนายความเสี่ยง</span><span data-lang="en">Predict Risk</span>
+        </button>
+      </form>
+
+      <div class="result-panel" id="predictResult">
+        <div class="result-top">
+          <div class="risk-circle" id="riskCircle"><span id="riskPct">0%</span></div>
+          <div class="risk-info">
+            <div class="risk-badge" id="riskBadge"></div>
+            <h3 id="riskTitle"></h3>
+            <p id="riskDesc" style="font-size:14px; color:var(--muted); line-height:1.6;"></p>
+          </div>
+        </div>
+        <div class="factor-bars">
+          <h4><span data-lang="th">ปัจจัยที่ส่งผลมากที่สุด</span><span data-lang="en">Top Contributing Factors</span></h4>
+          <div id="factorBarsContainer"></div>
+        </div>
+        <div class="recommendation-box" id="recommendBox"></div>
       </div>
     </div>
   </div>
