@@ -604,13 +604,16 @@
       <div class="chart-box">
         <canvas id="pricingChart" height="340"></canvas>
       </div>
+      <div class="chart-box" style="margin-top:12px; padding:16px 24px 12px;">
+        <canvas id="demandChart" height="120"></canvas>
+      </div>
       <div class="insight" style="margin-top:16px;" data-lang="th">
-        <strong>อ่านกราฟง่ายๆ:</strong> เส้นประสีเทา = ราคาเดิมที่โรงแรมตั้งเท่ากันทั้งปี (Flat Rate) | เส้นเขียว = ราคาใหม่ที่ปรับตามข้อมูล<br>
-        &#9650; <strong style="color:var(--green);">พื้นที่สีเขียว</strong> = เดือนที่ขึ้นราคาได้ (demand สูง ลูกค้าพร้อมจ่าย) | &#9660; <strong style="color:var(--blue);">พื้นที่สีฟ้า</strong> = เดือนที่ควรลดราคาดึงลูกค้า (demand ต่ำ)
+        <strong>อ่านกราฟง่ายๆ:</strong> กราฟบน — เส้นประเทา = ราคาเดิม (เท่ากันทั้งปี) | เส้นเขียว = ราคาใหม่ที่ปรับตาม demand<br>
+        กราฟล่าง — แท่งเทา = จำนวนการจอง | แท่งแดง = จำนวนที่ยกเลิก (เห็นชัดว่าเดือนไหน demand สูงควรขึ้นราคา เดือนไหน demand ต่ำควรลดราคา)
       </div>
       <div class="insight" style="margin-top:16px;" data-lang="en">
-        <strong>How to read:</strong> Gray dashed line = old flat rate (same price all year) | Green line = new data-driven price<br>
-        &#9650; <strong style="color:var(--green);">Green area</strong> = months to raise prices (high demand, guests willing to pay) | &#9660; <strong style="color:var(--blue);">Blue area</strong> = months to discount and attract guests (low demand)
+        <strong>How to read:</strong> Top chart — gray dashed = old flat rate | green line = new price adjusted by demand<br>
+        Bottom chart — gray bars = booking volume | red bars = cancellations (see which months have high demand to raise prices, and low demand to discount)
       </div>
     </div>
 
@@ -881,6 +884,12 @@ const DATA = {
     bookings:  [2215, 2823, 3406, 3786, 4129, 3946, 4223, 4551, 3638, 3810, 2491, 2398],
     revenue:   [348505, 497867, 627797, 708954, 838626, 945806, 1312127, 1443677, 799056, 667044, 438955, 445545]
   }
+};
+
+// Cancellations by month x hotel type (estimated from 37% avg, seasonal pattern)
+const CANCEL_DATA = {
+  city:   [1301, 2098, 2747, 3212, 3448, 2937, 3544, 3917, 2885, 3087, 1807, 1840],
+  resort: [553,  705,  920,  1060, 1197, 1105, 1182, 1275, 1019, 1067, 697,  671]
 };
 
 // ADR by month x hotel type
@@ -1249,10 +1258,88 @@ function createPricingChart(type = 'city') {
 }
 createPricingChart('city');
 
+// ============================================================
+// SLIDE 5: DEMAND MINI CHART (Bookings + Cancellations)
+// ============================================================
+let demandChart;
+function createDemandChart(type = 'city') {
+  const ctx = document.getElementById('demandChart').getContext('2d');
+  if (demandChart) demandChart.destroy();
+  const bookings = DATA[type].bookings;
+  const cancels = CANCEL_DATA[type];
+  const isEn = document.body.classList.contains('en');
+  const label = type === 'city' ? 'City Hotel' : 'Resort Hotel';
+
+  demandChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: MONTHS,
+      datasets: [
+        {
+          label: isEn ? 'Bookings' : 'จำนวนการจอง',
+          data: bookings,
+          backgroundColor: 'rgba(45,45,45,0.18)',
+          borderColor: 'rgba(45,45,45,0.3)',
+          borderWidth: 1,
+          borderRadius: 4,
+          borderSkipped: false,
+          order: 1
+        },
+        {
+          label: isEn ? 'Cancellations' : 'จำนวนที่ยกเลิก',
+          data: cancels,
+          backgroundColor: 'rgba(231,76,60,0.5)',
+          borderColor: 'rgba(231,76,60,0.7)',
+          borderWidth: 1,
+          borderRadius: 4,
+          borderSkipped: false,
+          order: 0
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        title: {
+          display: true,
+          text: isEn ? 'Monthly Demand & Cancellations — ' + label : 'Demand & การยกเลิกรายเดือน — ' + label,
+          font: { size: 12, weight: 600 }, color: '#999', align: 'start', padding: { bottom: 8 }
+        },
+        legend: { position: 'top', align: 'end', labels: { font: { size: 10 }, boxWidth: 12, padding: 8 } },
+        tooltip: {
+          backgroundColor: '#2D2D2D',
+          callbacks: {
+            label: function(c) {
+              return ' ' + c.dataset.label + ': ' + c.raw.toLocaleString();
+            },
+            afterBody: function(items) {
+              const idx = items[0].dataIndex;
+              const rate = Math.round(cancels[idx] / bookings[idx] * 100);
+              return '\n' + (isEn ? '  Cancel Rate: ' : '  อัตรายกเลิก: ') + rate + '%';
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(0,0,0,0.03)' },
+          ticks: { font: { size: 10 }, callback: v => v >= 1000 ? (v/1000).toFixed(0) + 'K' : v }
+        },
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+      }
+    }
+  });
+}
+createDemandChart('city');
+
 function setPricingFilter(type, btn) {
   document.querySelectorAll('#slide5Filter .filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   createPricingChart(type);
+  createDemandChart(type);
 }
 </script>
 
