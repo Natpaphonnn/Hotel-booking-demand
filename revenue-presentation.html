@@ -194,6 +194,81 @@
     .factor-pills { flex-direction: column; }
   }
 
+  /* === PREDICTOR === */
+  .predictor-container { max-width: 900px; margin: 0 auto; }
+  .predictor-form {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px;
+    background: var(--white); border-radius: 12px; padding: 28px 24px;
+    border: 1px solid var(--border);
+  }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group label { font-size: 14px; font-weight: 500; }
+  .form-group .form-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+  .form-group input, .form-group select {
+    padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+    font-family: 'Prompt'; font-size: 14px; font-weight: 300;
+    background: var(--light); color: var(--dark); transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--dark); }
+  .predict-btn {
+    grid-column: 1 / -1; padding: 14px 36px; background: var(--green); color: white;
+    border: none; border-radius: 8px; font-family: 'Prompt'; font-weight: 600;
+    font-size: 16px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 8px;
+  }
+  .predict-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(39,174,96,0.3); }
+  .result-panel {
+    background: var(--light); border-radius: 12px; padding: 32px 28px;
+    margin-top: 24px; opacity: 0; transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    display: none;
+  }
+  .result-panel.show { display: block; opacity: 1; transform: translateY(0); }
+  .result-top { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+  .risk-circle {
+    width: 120px; height: 120px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; flex-shrink: 0;
+    font-size: 28px; font-weight: 700; color: var(--dark);
+    position: relative;
+  }
+  .risk-circle::after {
+    content: ''; position: absolute; inset: 8px; border-radius: 50%;
+    background: var(--light);
+  }
+  .risk-circle span { position: relative; z-index: 1; }
+  .risk-badge {
+    display: inline-block; padding: 6px 16px; border-radius: 6px;
+    font-size: 14px; font-weight: 600; margin-bottom: 8px;
+  }
+  .risk-badge.low { background: rgba(39,174,96,0.15); color: #27AE60; }
+  .risk-badge.medium { background: rgba(243,156,18,0.15); color: #f39c12; }
+  .risk-badge.high { background: rgba(231,76,60,0.15); color: #E74C3C; }
+  .risk-info h3 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  .factor-bars { margin-top: 24px; }
+  .factor-bars h4 { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; font-weight: 600; }
+  .factor-bar-item { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .factor-bar-label { font-size: 13px; font-weight: 500; min-width: 140px; text-align: right; }
+  .factor-bar-track { flex: 1; height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; }
+  .factor-bar-fill { height: 100%; border-radius: 5px; transition: width 0.6s ease; }
+  .factor-bar-val { font-size: 12px; color: var(--muted); min-width: 36px; }
+  .recommendation-box {
+    margin-top: 20px; padding: 16px 20px; border-radius: 8px;
+    border-left: 3px solid var(--dark); background: var(--white);
+    font-size: 14px; line-height: 1.7;
+  }
+
+  @media (max-width: 900px) {
+    .predictor-form { grid-template-columns: 1fr; }
+    .result-top { flex-direction: column; text-align: center; }
+    .factor-bar-label { min-width: 100px; font-size: 12px; }
+  }
+  @media (max-width: 600px) {
+    .predictor-form { padding: 16px; gap: 12px; }
+    .risk-circle { width: 100px; height: 100px; font-size: 24px; }
+    .result-panel { padding: 20px 16px; }
+    .factor-bar-label { min-width: 80px; font-size: 11px; }
+  }
+
   /* === NAV DOTS === */
   .nav-dots {
     position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 100;
@@ -284,6 +359,7 @@
   <button class="nav-dot" onclick="scrollToSlide(3)"></button>
   <button class="nav-dot" onclick="scrollToSlide(4)"></button>
   <button class="nav-dot" onclick="scrollToSlide(5)"></button>
+  <button class="nav-dot" onclick="scrollToSlide(6)"></button>
 </nav>
 
 
@@ -293,7 +369,7 @@
 <section id="slide1">
   <div class="container">
     <div class="reveal">
-      <div class="slide-num">01 / 06</div>
+      <div class="slide-num">01 / 07</div>
       <div data-lang="th">
         <h2>ยอดจองพุ่ง แต่ทำไมกำไรเท่าเดิม?</h2>
         <p class="sec-desc">วิเคราะห์ข้อมูลจริง 119,390 การจองจากโรงแรม 2 แห่ง (City Hotel + Resort Hotel) ช่วง 2015-2017 พบว่า 37% ถูกยกเลิก — เท่ากับห้องว่างเปล่า ~56 ห้อง/วัน คิดเป็นรายได้ที่หายไป $16.7M ต่อปี เช่น เดือน ส.ค. มียอดจอง 13,877 ครั้ง แต่รายได้จริงได้แค่ $4.9M จาก potential $7.8M</p>
@@ -356,7 +432,7 @@
 <section class="sec-light" id="slide2">
   <div class="container">
     <div class="reveal">
-      <div class="slide-num">02 / 06</div>
+      <div class="slide-num">02 / 07</div>
       <div data-lang="th">
         <h2>32 คอลัมน์ที่มากกว่าแค่บันทึกการจอง</h2>
         <p class="sec-desc">ข้อมูลที่โรงแรมเก็บอยู่แล้วในระบบ PMS (Property Management System) ทุกวัน — เราจัดกลุ่ม 9 ตัวแปรสำคัญเป็น 3 มิติ ที่ช่วยแยกแขกที่จะมาจริงออกจากแขกที่จะยกเลิก</p>
@@ -447,7 +523,7 @@
 <section id="slide3">
   <div class="container">
     <div class="reveal">
-      <div class="slide-num">03 / 06</div>
+      <div class="slide-num">03 / 07</div>
       <div data-lang="th">
         <h2>ใครคือแขกตัวจริง? และใครคือ "แขกที่หายไป"</h2>
         <p class="sec-desc">จาก 44,223 การจองที่ยกเลิก เราพบ 2 สัญญาณที่แยกแขกตัวจริงกับแขกที่หายไปได้ชัดเจน — ลองนึกภาพ: ลูกค้า A จองล่วงหน้า 1 สัปดาห์และขอเตียงเสริม (เสี่ยงต่ำ 5%) vs ลูกค้า B จองล่วงหน้า 8 เดือนไม่มี request ใดๆ (เสี่ยงสูง 70%+)</p>
@@ -496,7 +572,7 @@
 <section class="sec-dark" id="slide4">
   <div class="container">
     <div class="reveal">
-      <div class="slide-num">04 / 06</div>
+      <div class="slide-num">04 / 07</div>
       <div data-lang="th">
         <h2>กู้รายได้คืน 15-25% ด้วยระบบทำนายอัจฉริยะ</h2>
         <p class="sec-desc">สร้างโมเดล XGBoost (Machine Learning) ที่ให้คะแนนความเสี่ยงทุกการจองตั้งแต่วินาทีที่จองเข้ามา — พูดง่ายๆ คือ ระบบจะบอกได้ทันทีว่า "การจองนี้มีโอกาส 85% ที่จะยกเลิก" ก่อนที่แขกจะยกเลิกจริง เพื่อให้ทีมรับมือได้ทัน</p>
@@ -548,7 +624,7 @@
 <section id="slide5">
   <div class="container">
     <div class="reveal">
-      <div class="slide-num">05 / 06</div>
+      <div class="slide-num">05 / 07</div>
       <div data-lang="th">
         <h2>Dynamic Pricing: ก่อน vs หลังปรับราคา</h2>
         <p class="sec-desc">โรงแรมส่วนใหญ่ตั้งราคาเท่ากันตลอดปี (Flat Rate) — แต่ข้อมูลบอกว่าราคาควรเปลี่ยนตาม 4 ปัจจัย ดูเปรียบเทียบก่อน-หลังปรับราคาจากข้อมูลจริง</p>
@@ -719,7 +795,7 @@
 <section class="sec-dark" id="slide6">
   <div class="container">
     <div class="reveal">
-      <div class="slide-num" style="color:rgba(255,255,255,0.3);">06 / 06</div>
+      <div class="slide-num" style="color:rgba(255,255,255,0.3);">06 / 07</div>
       <div data-lang="th">
         <h2>สรุป: ผลลัพธ์ที่จับต้องได้</h2>
         <p class="sec-desc">จากข้อมูลการจอง 119,390 รายการ สร้าง Framework ครบวงจร — ทำนายความเสี่ยง, ตั้งราคาอัจฉริยะ, และแบ่งกลุ่มลูกค้า ทั้งหมดสร้างจากข้อมูลจริง พร้อมนำไปปรับใช้กับโรงแรมใดก็ได้ที่มีระบบ PMS</p>
@@ -784,6 +860,102 @@
         <span style="font-size:12px; color:rgba(255,255,255,0.3); padding:4px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:4px;">Pandas</span>
       </div>
       <p style="font-size:12px; color:rgba(255,255,255,0.25);">119,390 bookings &middot; 2015–2017 &middot; Hotel Booking Demand Dataset</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!-- SLIDE 7: CANCELLATION RISK PREDICTOR                           -->
+<!-- ============================================================== -->
+<section class="sec-light" id="slide7">
+  <div class="container">
+    <div class="reveal">
+      <div class="slide-num">07 / 07</div>
+      <div data-lang="th">
+        <h2>ลองทำนายเอง: Cancellation Risk Predictor</h2>
+        <p class="sec-desc">จำลองการทำนายจากโมเดล XGBoost — กรอกข้อมูลการจองแล้วดูว่าระบบ AI จะประเมินความเสี่ยงอย่างไร พร้อมปัจจัยที่ส่งผลมากที่สุดและคำแนะนำ</p>
+      </div>
+      <div data-lang="en">
+        <h2>Try It Yourself: Cancellation Risk Predictor</h2>
+        <p class="sec-desc">Simulated prediction based on the XGBoost model — enter booking details to see how the AI system would assess cancellation risk, top contributing factors, and recommendations.</p>
+      </div>
+    </div>
+
+    <div class="predictor-container reveal">
+      <form class="predictor-form" onsubmit="event.preventDefault(); predict();">
+        <div class="form-group">
+          <label><span data-lang="th">ประเภทโรงแรม</span><span data-lang="en">Hotel Type</span></label>
+          <select id="p-hotel">
+            <option value="city">City Hotel</option>
+            <option value="resort">Resort Hotel</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Lead Time</label>
+          <input type="number" id="p-lead" value="90" min="0" max="800" step="1">
+          <div class="form-desc"><span data-lang="th">จองล่วงหน้ากี่วัน (0–800)</span><span data-lang="en">Days booked in advance (0–800)</span></div>
+        </div>
+        <div class="form-group">
+          <label><span data-lang="th">ADR (ราคาห้อง/คืน)</span><span data-lang="en">ADR (Rate/Night)</span></label>
+          <input type="number" id="p-adr" value="100" min="0" max="600" step="1">
+          <div class="form-desc"><span data-lang="th">ราคาเฉลี่ยต่อคืน $0–600</span><span data-lang="en">Average daily rate $0–600</span></div>
+        </div>
+        <div class="form-group">
+          <label><span data-lang="th">จำนวนคืน</span><span data-lang="en">Total Nights</span></label>
+          <input type="number" id="p-nights" value="3" min="1" max="30" step="1">
+          <div class="form-desc"><span data-lang="th">รวม weeknight + weekend (1–30)</span><span data-lang="en">Weeknight + weekend combined (1–30)</span></div>
+        </div>
+        <div class="form-group">
+          <label>Market Segment</label>
+          <select id="p-segment">
+            <option value="direct">Direct</option>
+            <option value="corporate">Corporate</option>
+            <option value="online_ta" selected>Online TA</option>
+            <option value="offline_ta">Offline TA</option>
+            <option value="groups">Groups</option>
+          </select>
+          <div class="form-desc"><span data-lang="th">ช่องทางการจอง</span><span data-lang="en">Booking channel</span></div>
+        </div>
+        <div class="form-group">
+          <label>Deposit Type</label>
+          <select id="p-deposit">
+            <option value="no_deposit" selected>No Deposit</option>
+            <option value="non_refund">Non Refund</option>
+            <option value="refundable">Refundable</option>
+          </select>
+          <div class="form-desc"><span data-lang="th">ประเภทมัดจำ</span><span data-lang="en">Deposit type</span></div>
+        </div>
+        <div class="form-group">
+          <label>Special Requests</label>
+          <input type="number" id="p-requests" value="1" min="0" max="5" step="1">
+          <div class="form-desc"><span data-lang="th">คำขอพิเศษ เช่น เตียงเสริม (0–5)</span><span data-lang="en">e.g. extra bed, high floor (0–5)</span></div>
+        </div>
+        <div class="form-group">
+          <label>Previous Cancellations</label>
+          <input type="number" id="p-prevcancel" value="0" min="0" max="20" step="1">
+          <div class="form-desc"><span data-lang="th">ประวัติยกเลิกของแขก (0–20)</span><span data-lang="en">Guest's cancellation history (0–20)</span></div>
+        </div>
+        <button type="submit" class="predict-btn">
+          <span data-lang="th">&#9889; ทำนายความเสี่ยง</span><span data-lang="en">&#9889; Predict Risk</span>
+        </button>
+      </form>
+
+      <div class="result-panel" id="predictResult">
+        <div class="result-top">
+          <div class="risk-circle" id="riskCircle"><span id="riskPct">0%</span></div>
+          <div class="risk-info">
+            <div class="risk-badge" id="riskBadge"></div>
+            <h3 id="riskTitle"></h3>
+            <p id="riskDesc" style="font-size:14px; color:var(--muted); line-height:1.6;"></p>
+          </div>
+        </div>
+        <div class="factor-bars">
+          <h4><span data-lang="th">ปัจจัยที่ส่งผลมากที่สุด</span><span data-lang="en">Top Contributing Factors</span></h4>
+          <div id="factorBarsContainer"></div>
+        </div>
+        <div class="recommendation-box" id="recommendBox"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -1344,6 +1516,138 @@ function setPricingFilter(type, btn) {
   btn.classList.add('active');
   createPricingChart(type);
   createDemandChart(type);
+}
+
+// ============================================================
+// SLIDE 7: CANCELLATION RISK PREDICTOR
+// ============================================================
+function predict() {
+  const lead = Math.max(0, Math.min(800, +document.getElementById('p-lead').value || 0));
+  const deposit = document.getElementById('p-deposit').value;
+  const prevCancel = Math.max(0, Math.min(20, +document.getElementById('p-prevcancel').value || 0));
+  const segment = document.getElementById('p-segment').value;
+  const hotel = document.getElementById('p-hotel').value;
+  const adr = Math.max(0, Math.min(600, +document.getElementById('p-adr').value || 0));
+  const requests = Math.max(0, Math.min(5, +document.getElementById('p-requests').value || 0));
+  const isEn = document.body.classList.contains('en');
+
+  // Scoring (simulated XGBoost feature importance)
+  const factors = {};
+
+  // Lead Time: 0→0, 30→10, 100→20, 200→28, 365+→35
+  let ltScore = lead <= 30 ? (lead / 30) * 10 : lead <= 100 ? 10 + ((lead - 30) / 70) * 10 : lead <= 200 ? 20 + ((lead - 100) / 100) * 8 : 28 + Math.min((lead - 200) / 165, 1) * 7;
+  ltScore = Math.min(ltScore, 35);
+  factors['Lead Time'] = { score: ltScore, max: 35, label: isEn ? 'Lead Time' : 'ระยะจองล่วงหน้า' };
+
+  // Deposit Type
+  const depositScores = { no_deposit: 8, refundable: 15, non_refund: 30 };
+  const depScore = depositScores[deposit] || 8;
+  factors['Deposit'] = { score: depScore, max: 30, label: isEn ? 'Deposit Type' : 'ประเภทมัดจำ' };
+
+  // Previous Cancellations
+  const pcScore = Math.min(prevCancel * 5, 25);
+  factors['Prev Cancel'] = { score: pcScore, max: 25, label: isEn ? 'Prev. Cancellations' : 'ประวัติยกเลิก' };
+
+  // Market Segment
+  const segScores = { direct: 2, corporate: 5, online_ta: 15, offline_ta: 10, groups: 18 };
+  const segScore = segScores[segment] || 5;
+  factors['Segment'] = { score: segScore, max: 18, label: isEn ? 'Market Segment' : 'ช่องทางจอง' };
+
+  // Hotel Type
+  const htScore = hotel === 'city' ? 6 : 2;
+  factors['Hotel'] = { score: htScore, max: 6, label: isEn ? 'Hotel Type' : 'ประเภทโรงแรม' };
+
+  // ADR
+  const adrScore = adr < 50 ? 5 : adr < 100 ? 3 : adr < 200 ? 1 : 0;
+  factors['ADR'] = { score: adrScore, max: 5, label: 'ADR' };
+
+  // Special Requests (negative = reduces risk)
+  const reqScores = [0, -5, -8, -12, -15, -15];
+  const reqScore = reqScores[Math.min(requests, 5)];
+  factors['Requests'] = { score: reqScore, max: 15, label: isEn ? 'Special Requests' : 'คำขอพิเศษ', negative: true };
+
+  // Raw total & normalize to 0-100
+  const rawMax = 35 + 30 + 25 + 18 + 6 + 5; // 119
+  const rawScore = ltScore + depScore + pcScore + segScore + htScore + adrScore + reqScore;
+  const risk = Math.max(0, Math.min(100, Math.round((rawScore / rawMax) * 100)));
+
+  // Determine level
+  let level, color, badgeClass;
+  if (risk < 30) { level = 'low'; color = '#27AE60'; badgeClass = 'low'; }
+  else if (risk <= 60) { level = 'medium'; color = '#f39c12'; badgeClass = 'medium'; }
+  else { level = 'high'; color = '#E74C3C'; badgeClass = 'high'; }
+
+  const badgeTexts = {
+    low: isEn ? 'Low Risk' : 'ความเสี่ยงต่ำ',
+    medium: isEn ? 'Medium Risk' : 'ความเสี่ยงปานกลาง',
+    high: isEn ? 'High Risk' : 'ความเสี่ยงสูง'
+  };
+
+  const titles = {
+    low: isEn ? 'This booking looks solid' : 'การจองนี้มีโอกาสมาจริงสูง',
+    medium: isEn ? 'Moderate cancellation risk' : 'มีความเสี่ยงยกเลิกปานกลาง',
+    high: isEn ? 'High chance of cancellation' : 'มีโอกาสยกเลิกสูงมาก'
+  };
+
+  const descs = {
+    low: isEn ? 'The guest shows strong intent to stay. Process normally.' : 'แขกมีสัญญาณว่าตั้งใจมาจริง ดำเนินการปกติ',
+    medium: isEn ? 'Some risk factors present. Consider a follow-up.' : 'มีปัจจัยเสี่ยงบางอย่าง ควรติดตามเพิ่ม',
+    high: isEn ? 'Multiple risk factors detected. Take action now.' : 'พบปัจจัยเสี่ยงหลายอย่าง ควรดำเนินการทันที'
+  };
+
+  const recommendations = {
+    low: isEn
+      ? '&#10003; <strong>Recommendation:</strong> Process the booking normally. Consider offering a room upgrade or loyalty enrollment to increase guest value.'
+      : '&#10003; <strong>คำแนะนำ:</strong> ดำเนินการจองตามปกติ อาจเสนอ upgrade ห้องหรือ loyalty program เพื่อเพิ่มมูลค่า',
+    medium: isEn
+      ? '&#9888; <strong>Recommendation:</strong> Send a confirmation email/call to verify intent. Offer early check-in or a small perk to lock the booking. Monitor for changes.'
+      : '&#9888; <strong>คำแนะนำ:</strong> ส่ง email/โทรยืนยันความตั้งใจ เสนอ early check-in หรือสิทธิพิเศษเล็กน้อยเพื่อ lock การจอง ติดตามต่อ',
+    high: isEn
+      ? '&#9888; <strong>Recommendation:</strong> Require a non-refundable deposit or prepayment. Activate overbooking strategy (15-20%). Call to confirm within 48 hours.'
+      : '&#9888; <strong>คำแนะนำ:</strong> เรียกเก็บมัดจำ non-refundable หรือชำระล่วงหน้า เปิด overbooking 15-20% โทรยืนยันภายใน 48 ชม.'
+  };
+
+  // Update UI
+  document.getElementById('riskPct').textContent = risk + '%';
+  const circle = document.getElementById('riskCircle');
+  const bg = risk > 0 ? `conic-gradient(${color} 0% ${risk}%, var(--border) ${risk}% 100%)` : `conic-gradient(var(--border) 0% 100%)`;
+  circle.style.background = bg;
+
+  const badge = document.getElementById('riskBadge');
+  badge.className = 'risk-badge ' + badgeClass;
+  badge.textContent = badgeTexts[level];
+
+  document.getElementById('riskTitle').textContent = titles[level];
+  document.getElementById('riskDesc').textContent = descs[level];
+  document.getElementById('recommendBox').innerHTML = recommendations[level];
+
+  // Factor bars — sort by absolute contribution, top 4
+  const sorted = Object.entries(factors)
+    .map(([k, v]) => ({ key: k, ...v }))
+    .sort((a, b) => Math.abs(b.score) - Math.abs(a.score))
+    .slice(0, 4);
+
+  const container = document.getElementById('factorBarsContainer');
+  container.innerHTML = sorted.map(f => {
+    const pct = Math.round((Math.abs(f.score) / f.max) * 100);
+    const barColor = f.negative && f.score < 0 ? '#27AE60' : (pct > 60 ? '#E74C3C' : pct > 30 ? '#f39c12' : '#27AE60');
+    const sign = f.score < 0 ? '' : '+';
+    return `<div class="factor-bar-item">
+      <div class="factor-bar-label">${f.label}</div>
+      <div class="factor-bar-track"><div class="factor-bar-fill" style="width:${pct}%; background:${barColor};"></div></div>
+      <div class="factor-bar-val">${sign}${Math.round(f.score)}</div>
+    </div>`;
+  }).join('');
+
+  // Show result panel with animation
+  const panel = document.getElementById('predictResult');
+  panel.classList.remove('show');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      panel.classList.add('show');
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  });
 }
 </script>
 
