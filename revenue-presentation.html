@@ -216,21 +216,36 @@
     background: var(--light); color: var(--dark); transition: border-color 0.2s;
   }
   .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--green); }
+  /* Segmented pill buttons for select-like options */
+  .seg-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .seg-btn {
+    padding: 9px 18px; border-radius: 8px; font-size: 13px; font-family: 'Prompt';
+    cursor: pointer; border: 1px solid var(--border); background: var(--light);
+    color: var(--muted); font-weight: 400; transition: all 0.2s; white-space: nowrap;
+  }
+  .seg-btn:hover { border-color: var(--dark); color: var(--dark); }
+  .seg-btn.active { background: var(--dark); color: white; border-color: var(--dark); }
   /* Checkbox grid for special requests */
   .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
   .check-item {
-    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
-    background: var(--light); border: 1px solid var(--border); border-radius: 8px;
-    cursor: pointer; transition: border-color 0.2s, background 0.2s;
+    display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+    background: var(--white); border: 1px solid var(--border); border-radius: 8px;
+    cursor: pointer; transition: all 0.2s;
   }
-  .check-item:hover { border-color: var(--dark); }
-  .check-item input[type="checkbox"] {
-    width: 16px; height: 16px; accent-color: var(--green); cursor: pointer; flex-shrink: 0;
+  .check-item:hover { border-color: var(--dark); background: var(--light); }
+  .check-item input[type="checkbox"] { display: none; }
+  .check-icon {
+    width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: all 0.2s; font-size: 12px; color: transparent;
+  }
+  .check-item:has(input:checked) .check-icon {
+    background: var(--green); border-color: var(--green); color: white;
   }
   .check-item span {
-    font-size: 13px; color: var(--dark); font-weight: 300; cursor: pointer;
+    font-size: 13px; color: var(--dark); font-weight: 400; cursor: pointer;
   }
-  .check-item:has(input:checked) { border-color: var(--green); background: rgba(39,174,96,0.08); }
+  .check-item:has(input:checked) { border-color: var(--green); background: rgba(39,174,96,0.06); }
   .form-group-full { grid-column: 1 / -1; }
   .predict-btn {
     grid-column: 1 / -1; padding: 14px 36px; background: var(--dark); color: white;
@@ -906,10 +921,10 @@
         <div class="form-group">
           <label><span data-lang="th">ประเภทโรงแรม</span><span data-lang="en">Hotel Type</span></label>
           <span class="field-tag">hotel_type</span>
-          <select id="p-hotel">
-            <option value="city">City Hotel</option>
-            <option value="resort">Resort Hotel</option>
-          </select>
+          <div class="seg-group" data-field="p-hotel">
+            <button type="button" class="seg-btn active" data-value="city">&#127963; City Hotel</button>
+            <button type="button" class="seg-btn" data-value="resort">&#127965; Resort Hotel</button>
+          </div>
         </div>
         <div class="form-group">
           <label>Lead Time</label>
@@ -929,26 +944,26 @@
           <input type="number" id="p-nights" value="3" min="1" max="30" step="1">
           <div class="form-desc"><span data-lang="th">รวม weeknight + weekend (1–30)</span><span data-lang="en">Weeknight + weekend combined (1–30)</span></div>
         </div>
-        <div class="form-group">
+        <div class="form-group form-group-full">
           <label>Market Segment</label>
           <span class="field-tag">market_segment</span>
-          <select id="p-segment">
-            <option value="direct">Direct</option>
-            <option value="corporate">Corporate</option>
-            <option value="online_ta" selected>Online TA</option>
-            <option value="offline_ta">Offline TA</option>
-            <option value="groups">Groups</option>
-          </select>
+          <div class="seg-group" data-field="p-segment">
+            <button type="button" class="seg-btn" data-value="direct">&#128100; Direct</button>
+            <button type="button" class="seg-btn" data-value="corporate">&#127970; Corporate</button>
+            <button type="button" class="seg-btn active" data-value="online_ta">&#127760; Online TA</button>
+            <button type="button" class="seg-btn" data-value="offline_ta">&#128222; Offline TA</button>
+            <button type="button" class="seg-btn" data-value="groups">&#128101; Groups</button>
+          </div>
           <div class="form-desc"><span data-lang="th">ช่องทางการจอง</span><span data-lang="en">Booking channel</span></div>
         </div>
-        <div class="form-group">
+        <div class="form-group form-group-full">
           <label>Deposit Type</label>
           <span class="field-tag">deposit_type</span>
-          <select id="p-deposit">
-            <option value="no_deposit" selected>No Deposit</option>
-            <option value="non_refund">Non Refund</option>
-            <option value="refundable">Refundable</option>
-          </select>
+          <div class="seg-group" data-field="p-deposit">
+            <button type="button" class="seg-btn active" data-value="no_deposit">No Deposit</button>
+            <button type="button" class="seg-btn" data-value="non_refund">Non Refund</button>
+            <button type="button" class="seg-btn" data-value="refundable">Refundable</button>
+          </div>
           <div class="form-desc"><span data-lang="th">ประเภทมัดจำ</span><span data-lang="en">Deposit type</span></div>
         </div>
         <div class="form-group form-group-full">
@@ -956,11 +971,11 @@
           <span class="field-tag">total_of_special_requests</span>
           <div class="form-desc" style="margin-bottom:4px;"><span data-lang="th">เลือกคำขอพิเศษที่ต้องการ</span><span data-lang="en">Select desired special requests</span></div>
           <div class="checkbox-grid">
-            <label class="check-item"><input type="checkbox" class="req-check"><span><span data-lang="th">Extra Bed / เตียงเสริม</span><span data-lang="en">Extra Bed</span></span></label>
-            <label class="check-item"><input type="checkbox" class="req-check"><span><span data-lang="th">High Floor / ห้องชั้นสูง</span><span data-lang="en">High Floor</span></span></label>
-            <label class="check-item"><input type="checkbox" class="req-check"><span><span data-lang="th">Early Check-in / เช็คอินก่อนเวลา</span><span data-lang="en">Early Check-in</span></span></label>
-            <label class="check-item"><input type="checkbox" class="req-check"><span><span data-lang="th">Late Check-out / เช็คเอาท์ช้า</span><span data-lang="en">Late Check-out</span></span></label>
-            <label class="check-item"><input type="checkbox" class="req-check"><span><span data-lang="th">Sea View / วิวทะเล</span><span data-lang="en">Sea View</span></span></label>
+            <label class="check-item"><input type="checkbox" class="req-check"><span class="check-icon">&#10003;</span><span><span data-lang="th">&#128716; Extra Bed / เตียงเสริม</span><span data-lang="en">&#128716; Extra Bed</span></span></label>
+            <label class="check-item"><input type="checkbox" class="req-check"><span class="check-icon">&#10003;</span><span><span data-lang="th">&#127961; High Floor / ห้องชั้นสูง</span><span data-lang="en">&#127961; High Floor</span></span></label>
+            <label class="check-item"><input type="checkbox" class="req-check"><span class="check-icon">&#10003;</span><span><span data-lang="th">&#9200; Early Check-in / เช็คอินก่อนเวลา</span><span data-lang="en">&#9200; Early Check-in</span></span></label>
+            <label class="check-item"><input type="checkbox" class="req-check"><span class="check-icon">&#10003;</span><span><span data-lang="th">&#127769; Late Check-out / เช็คเอาท์ช้า</span><span data-lang="en">&#127769; Late Check-out</span></span></label>
+            <label class="check-item"><input type="checkbox" class="req-check"><span class="check-icon">&#10003;</span><span><span data-lang="th">&#127754; Sea View / วิวทะเล</span><span data-lang="en">&#127754; Sea View</span></span></label>
           </div>
         </div>
         <div class="form-group">
@@ -1552,14 +1567,31 @@ function setPricingFilter(type, btn) {
 }
 
 // ============================================================
+// SLIDE 7: SEGMENTED BUTTONS
+// ============================================================
+document.querySelectorAll('.seg-group').forEach(group => {
+  group.querySelectorAll('.seg-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      group.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+});
+
+function getSegValue(field) {
+  const active = document.querySelector('.seg-group[data-field="' + field + '"] .seg-btn.active');
+  return active ? active.dataset.value : '';
+}
+
+// ============================================================
 // SLIDE 7: CANCELLATION RISK PREDICTOR
 // ============================================================
 function predict() {
   const lead = Math.max(0, Math.min(800, +document.getElementById('p-lead').value || 0));
-  const deposit = document.getElementById('p-deposit').value;
+  const deposit = getSegValue('p-deposit');
   const prevCancel = Math.max(0, Math.min(20, +document.getElementById('p-prevcancel').value || 0));
-  const segment = document.getElementById('p-segment').value;
-  const hotel = document.getElementById('p-hotel').value;
+  const segment = getSegValue('p-segment');
+  const hotel = getSegValue('p-hotel');
   const adr = Math.max(0, Math.min(600, +document.getElementById('p-adr').value || 0));
   const requests = document.querySelectorAll('.req-check:checked').length;
   const isEn = document.body.classList.contains('en');
