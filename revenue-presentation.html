@@ -164,6 +164,47 @@
   .sec-dark .cta-btn { background: var(--white); color: var(--dark); }
   .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
 
+  /* === BEFORE/AFTER TOGGLE === */
+  .view-toggle { display: flex; gap: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); display: inline-flex; margin-bottom: 20px; }
+  .view-btn {
+    padding: 10px 24px; font-size: 14px; font-family: 'Prompt'; cursor: pointer;
+    border: none; background: var(--white); color: var(--muted); font-weight: 400; transition: all 0.2s;
+  }
+  .view-btn.active { background: var(--dark); color: white; font-weight: 500; }
+  .view-btn:hover:not(.active) { background: var(--light); }
+  .view-panel { display: none; }
+  .view-panel.active { display: block; }
+
+  /* === COMPARISON TABLE === */
+  .cmp-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow: hidden; margin-top: 16px; font-size: 14px; }
+  .cmp-table th { background: var(--dark); color: white; padding: 14px 16px; text-align: left; font-weight: 500; font-size: 13px; letter-spacing: 0.5px; }
+  .cmp-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .cmp-table tr:last-child td { border-bottom: none; }
+  .cmp-table tr:nth-child(even) td { background: var(--light); }
+  .cmp-table .old { color: var(--muted); text-decoration: line-through; }
+  .cmp-table .new { color: var(--green); font-weight: 600; }
+  .cmp-table .delta { font-weight: 600; font-size: 13px; }
+  .cmp-table .delta-up { color: var(--green); }
+  .cmp-table .delta-down { color: var(--blue); }
+  .cmp-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+  .cmp-tag-season { background: #FFF3E0; color: #E65100; }
+  .cmp-tag-lead { background: #E3F2FD; color: #1565C0; }
+  .cmp-tag-channel { background: #F3E5F5; color: #7B1FA2; }
+  .cmp-tag-demand { background: #E8F5E9; color: #2E7D32; }
+
+  /* === FACTOR PILLS === */
+  .factor-pills { display: flex; gap: 12px; flex-wrap: wrap; margin: 20px 0; }
+  .factor-pill { display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: var(--light); border-radius: 10px; border: 1px solid var(--border); }
+  .factor-pill-icon { font-size: 22px; }
+  .factor-pill-text { font-size: 13px; line-height: 1.5; }
+  .factor-pill-label { font-weight: 600; font-size: 14px; }
+
+  @media (max-width: 600px) {
+    .cmp-table { font-size: 12px; }
+    .cmp-table th, .cmp-table td { padding: 8px 10px; }
+    .factor-pills { flex-direction: column; }
+  }
+
   /* === NAV DOTS === */
   .nav-dots {
     position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 100;
@@ -481,51 +522,186 @@
     <div class="reveal">
       <div class="slide-num">05 / 06</div>
       <div data-lang="th">
-        <h2>Dynamic Pricing: ตั้งราคาตามพฤติกรรม ไม่ใช่ตามสัญชาตญาณ</h2>
-        <p class="sec-desc">ราคาห้อง (ADR) เปลี่ยนตามฤดูกาลอย่างชัดเจน — เช่น City Hotel เดือน ส.ค. ได้ถึง $147/คืน แต่ ม.ค. เหลือ $89/คืน (ห่างกัน 65%) แต่โรงแรมส่วนใหญ่ยังตั้งราคาเท่ากันตลอดปี ทำให้เสียรายได้ช่วง High Season และไม่ดึงลูกค้า Low Season</p>
+        <h2>Dynamic Pricing: ก่อน vs หลังปรับราคา</h2>
+        <p class="sec-desc">โรงแรมส่วนใหญ่ตั้งราคาเท่ากันตลอดปี (Flat Rate) — แต่ข้อมูลบอกว่าราคาควรเปลี่ยนตาม 4 ปัจจัย ดูเปรียบเทียบก่อน-หลังปรับราคาจากข้อมูลจริง</p>
       </div>
       <div data-lang="en">
-        <h2>Dynamic Pricing: Price by Data, Not Gut Feel</h2>
-        <p class="sec-desc">Room rates (ADR) shift dramatically by season — e.g. City Hotel gets $147/night in Aug but only $89 in Jan (65% gap). Most hotels still use flat pricing year-round, missing High Season upside and failing to attract Low Season demand.</p>
+        <h2>Dynamic Pricing: Before vs After</h2>
+        <p class="sec-desc">Most hotels use flat rates year-round — but data says pricing should adapt to 4 factors. See the before-after comparison from real data.</p>
       </div>
     </div>
 
+    <!-- 4 Factors that drive pricing -->
     <div class="reveal">
-      <div class="filter-group" id="slide5Filter">
-        <button class="filter-btn active" onclick="setPricingFilter('both', this)">
-          <span data-lang="th">ทั้งสองแบบ</span><span data-lang="en">Both</span>
-        </button>
-        <button class="filter-btn" onclick="setPricingFilter('city', this)">City Hotel</button>
-        <button class="filter-btn" onclick="setPricingFilter('resort', this)">Resort Hotel</button>
-      </div>
-      <div class="chart-box">
-        <canvas id="adrChart" height="340"></canvas>
+      <div data-lang="th" style="font-size:14px; font-weight:600; margin-bottom:12px; color:var(--muted);">ปรับราคาจากอะไร? — 4 ปัจจัยหลักจากข้อมูล</div>
+      <div data-lang="en" style="font-size:14px; font-weight:600; margin-bottom:12px; color:var(--muted);">What drives pricing? — 4 key factors from data</div>
+      <div class="factor-pills">
+        <div class="factor-pill">
+          <div class="factor-pill-icon">&#127774;</div>
+          <div>
+            <div class="factor-pill-label"><span data-lang="th">ฤดูกาล</span><span data-lang="en">Seasonality</span></div>
+            <div class="factor-pill-text"><span data-lang="th">ส.ค. ADR สูงกว่า ม.ค. ถึง 65% — demand สูง = ราคาขึ้นได้</span><span data-lang="en">Aug ADR is 65% higher than Jan — high demand = price up</span></div>
+          </div>
+        </div>
+        <div class="factor-pill">
+          <div class="factor-pill-icon">&#128197;</div>
+          <div>
+            <div class="factor-pill-label"><span data-lang="th">ระยะจองล่วงหน้า</span><span data-lang="en">Lead Time</span></div>
+            <div class="factor-pill-text"><span data-lang="th">จอง 8-30 วัน = Sweet Spot ADR $105 (ลูกค้าพร้อมจ่าย + ยกเลิกน้อย)</span><span data-lang="en">8-30 days = Sweet Spot ADR $105 (willing to pay + low cancel)</span></div>
+          </div>
+        </div>
+        <div class="factor-pill">
+          <div class="factor-pill-icon">&#128187;</div>
+          <div>
+            <div class="factor-pill-label"><span data-lang="th">ช่องทางการจอง</span><span data-lang="en">Booking Channel</span></div>
+            <div class="factor-pill-text"><span data-lang="th">OTA ยกเลิก 40% (+ เสียค่าคอม 15-25%) vs Direct ยกเลิกแค่ 15%</span><span data-lang="en">OTA cancels 40% (+ 15-25% commission) vs Direct cancels only 15%</span></div>
+          </div>
+        </div>
+        <div class="factor-pill">
+          <div class="factor-pill-icon">&#127968;</div>
+          <div>
+            <div class="factor-pill-label"><span data-lang="th">ประเภทโรงแรม</span><span data-lang="en">Hotel Type</span></div>
+            <div class="factor-pill-text"><span data-lang="th">City Hotel ราคาสูงกว่า Resort 30%+ แต่ยกเลิกเยอะกว่า (42% vs 28%)</span><span data-lang="en">City Hotel rates 30%+ higher than Resort, but cancels more (42% vs 28%)</span></div>
+          </div>
+        </div>
       </div>
     </div>
 
+    <!-- Before / After Toggle -->
+    <div class="reveal">
+      <div class="view-toggle">
+        <button class="view-btn active" onclick="switchView('before', this)">
+          <span data-lang="th">&#10060; ก่อนปรับ (Flat Rate)</span><span data-lang="en">&#10060; Before (Flat Rate)</span>
+        </button>
+        <button class="view-btn" onclick="switchView('after', this)">
+          <span data-lang="th">&#9989; หลังปรับ (Dynamic)</span><span data-lang="en">&#9989; After (Dynamic)</span>
+        </button>
+      </div>
+
+      <!-- BEFORE Panel -->
+      <div class="view-panel active" id="panel-before">
+        <div class="chart-box">
+          <canvas id="adrBeforeChart" height="300"></canvas>
+        </div>
+        <div data-lang="th">
+          <table class="cmp-table" style="margin-top:20px;">
+            <thead><tr><th>สถานการณ์</th><th>Flat Rate</th><th>ปัญหา</th></tr></thead>
+            <tbody>
+              <tr><td>&#127774; City Hotel เดือน ส.ค. (Peak)</td><td>$112/คืน</td><td style="color:var(--red);">ราคาต่ำกว่าที่ตลาดพร้อมจ่าย — เสียรายได้ $35/คืน</td></tr>
+              <tr><td>&#10052; City Hotel เดือน ม.ค. (Low)</td><td>$112/คืน</td><td style="color:var(--red);">ราคาสูงกว่า demand — ห้องว่างเยอะ occupancy ต่ำ</td></tr>
+              <tr><td>&#128187; จอง OTA ล่วงหน้า 200 วัน</td><td>$112/คืน</td><td style="color:var(--red);">ราคาเท่ากับ Direct ทั้งที่เสียค่าคอม 15-25% + ยกเลิก 55%</td></tr>
+              <tr><td>&#128100; แขกเก่าจองตรง 10 วันก่อน</td><td>$112/คืน</td><td style="color:var(--red);">ราคาเท่ากับ OTA ทั้งที่ควรให้ส่วนลดดึงลูกค้ากลับมา</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div data-lang="en">
+          <table class="cmp-table" style="margin-top:20px;">
+            <thead><tr><th>Scenario</th><th>Flat Rate</th><th>Problem</th></tr></thead>
+            <tbody>
+              <tr><td>&#127774; City Hotel Aug (Peak)</td><td>$112/night</td><td style="color:var(--red);">Below market willingness — losing $35/night potential</td></tr>
+              <tr><td>&#10052; City Hotel Jan (Low)</td><td>$112/night</td><td style="color:var(--red);">Above demand — empty rooms, low occupancy</td></tr>
+              <tr><td>&#128187; OTA booking 200 days ahead</td><td>$112/night</td><td style="color:var(--red);">Same as Direct despite 15-25% commission + 55% cancel rate</td></tr>
+              <tr><td>&#128100; Repeat guest, direct, 10 days</td><td>$112/night</td><td style="color:var(--red);">Same price as OTA — no incentive for loyalty</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- AFTER Panel -->
+      <div class="view-panel" id="panel-after">
+        <div class="chart-box">
+          <canvas id="adrAfterChart" height="300"></canvas>
+        </div>
+        <div data-lang="th">
+          <table class="cmp-table" style="margin-top:20px;">
+            <thead><tr><th>สถานการณ์</th><th>ราคาเดิม</th><th>ราคาใหม่</th><th>ปรับจากอะไร</th><th>ผลลัพธ์</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>&#127774; City Hotel ส.ค. (Peak)</td>
+                <td class="old">$112</td>
+                <td class="new">$147</td>
+                <td><span class="cmp-tag cmp-tag-season">ฤดูกาล</span> <span class="cmp-tag cmp-tag-demand">Demand สูง</span></td>
+                <td class="delta delta-up">+$35/คืน (+31%)</td>
+              </tr>
+              <tr>
+                <td>&#10052; City Hotel ม.ค. (Low)</td>
+                <td class="old">$112</td>
+                <td class="new">$82</td>
+                <td><span class="cmp-tag cmp-tag-season">ฤดูกาล</span> <span class="cmp-tag cmp-tag-demand">Demand ต่ำ</span></td>
+                <td class="delta delta-down">-$30/คืน &rarr; ดึง occupancy</td>
+              </tr>
+              <tr>
+                <td>&#128187; จอง OTA 200 วันล่วงหน้า</td>
+                <td class="old">$112</td>
+                <td class="new">$125</td>
+                <td><span class="cmp-tag cmp-tag-channel">ช่องทาง OTA</span> <span class="cmp-tag cmp-tag-lead">Lead Time ไกล</span></td>
+                <td class="delta delta-up">+$13/คืน ชดเชยค่าคอม+เสี่ยงยกเลิก</td>
+              </tr>
+              <tr>
+                <td>&#128100; แขกเก่า จองตรง 10 วัน</td>
+                <td class="old">$112</td>
+                <td class="new">$99</td>
+                <td><span class="cmp-tag cmp-tag-channel">Direct</span> <span class="cmp-tag cmp-tag-lead">Sweet Spot</span></td>
+                <td class="delta delta-down">-$13/คืน &rarr; ดึงกลับมา ลดค่าคอม</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div data-lang="en">
+          <table class="cmp-table" style="margin-top:20px;">
+            <thead><tr><th>Scenario</th><th>Old Rate</th><th>New Rate</th><th>Adjusted By</th><th>Result</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>&#127774; City Hotel Aug (Peak)</td>
+                <td class="old">$112</td>
+                <td class="new">$147</td>
+                <td><span class="cmp-tag cmp-tag-season">Season</span> <span class="cmp-tag cmp-tag-demand">High Demand</span></td>
+                <td class="delta delta-up">+$35/night (+31%)</td>
+              </tr>
+              <tr>
+                <td>&#10052; City Hotel Jan (Low)</td>
+                <td class="old">$112</td>
+                <td class="new">$82</td>
+                <td><span class="cmp-tag cmp-tag-season">Season</span> <span class="cmp-tag cmp-tag-demand">Low Demand</span></td>
+                <td class="delta delta-down">-$30/night &rarr; drive occupancy</td>
+              </tr>
+              <tr>
+                <td>&#128187; OTA booking 200 days out</td>
+                <td class="old">$112</td>
+                <td class="new">$125</td>
+                <td><span class="cmp-tag cmp-tag-channel">OTA Channel</span> <span class="cmp-tag cmp-tag-lead">Long Lead</span></td>
+                <td class="delta delta-up">+$13/night offsets commission+risk</td>
+              </tr>
+              <tr>
+                <td>&#128100; Repeat guest, direct, 10d</td>
+                <td class="old">$112</td>
+                <td class="new">$99</td>
+                <td><span class="cmp-tag cmp-tag-channel">Direct</span> <span class="cmp-tag cmp-tag-lead">Sweet Spot</span></td>
+                <td class="delta delta-down">-$13/night &rarr; retain, cut commission</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue Impact -->
     <div class="stats-row reveal stagger" style="margin-top:24px;">
       <div class="stat-card" style="background:var(--light); border-radius:12px;">
         <div class="stat-val" style="color:var(--dark);">$105</div>
-        <div class="stat-label" data-lang="th">Sweet Spot ADR (จอง 8-30 วันล่วงหน้า) — ลูกค้ากลุ่มนี้พร้อมจ่ายและยกเลิกน้อย</div>
-        <div class="stat-label" data-lang="en">Sweet Spot ADR (8-30 day bookings) — these guests pay well and rarely cancel</div>
+        <div class="stat-label" data-lang="th">Sweet Spot ADR (จอง 8-30 วัน) — กลุ่มที่พร้อมจ่ายและมาจริง</div>
+        <div class="stat-label" data-lang="en">Sweet Spot ADR (8-30 days) — willing to pay and show up</div>
       </div>
       <div class="stat-card" style="background:var(--light); border-radius:12px;">
         <div class="stat-val" style="color:var(--red);">+60%</div>
-        <div class="stat-label" data-lang="th">ช่วง High vs Low Season — ราคา ส.ค. สูงกว่า ม.ค. ถึง 60% แต่โรงแรมหลายแห่งไม่ได้ปรับตาม</div>
-        <div class="stat-label" data-lang="en">High vs Low Season gap — Aug rates 60% higher than Jan, but many hotels don't adjust</div>
+        <div class="stat-label" data-lang="th">ส่วนต่าง High vs Low Season ที่ยังไม่ถูกใช้ประโยชน์</div>
+        <div class="stat-label" data-lang="en">High vs Low Season gap not yet captured</div>
       </div>
       <div class="stat-card" style="background:var(--light); border-radius:12px;">
         <div class="stat-val" style="color:var(--green);">$0.6-1.1M</div>
-        <div class="stat-label" data-lang="th">รายได้เพิ่มจาก Dynamic Pricing — แค่ปรับราคา $8-15/คืน ตามฤดูกาลก็เห็นผล</div>
-        <div class="stat-label" data-lang="en">Revenue uplift — just adjusting $8-15/night by season makes a significant impact</div>
+        <div class="stat-label" data-lang="th">รายได้ที่เพิ่มได้/ปี จาก Dynamic Pricing</div>
+        <div class="stat-label" data-lang="en">Annual revenue uplift from Dynamic Pricing</div>
       </div>
-    </div>
-
-    <div class="insight reveal" style="margin-top:16px;" data-lang="th">
-      <strong>ตัวอย่างการใช้งาน:</strong> ถ้าลูกค้าจอง City Hotel เดือน ส.ค. ล่วงหน้า 15 วัน (Sweet Spot) &rarr; ตั้งราคา premium $150/คืน (ปกติ $112) เพราะ demand สูง + cancel rate ต่ำ แต่ถ้าเดือน ม.ค. ยอดจองน้อย &rarr; ลด 10-15% เป็น $76/คืน เพื่อดึง occupancy
-    </div>
-    <div class="insight reveal" style="margin-top:16px;" data-lang="en">
-      <strong>Example:</strong> If a guest books a City Hotel in Aug, 15 days ahead (Sweet Spot) &rarr; price at premium $150/night (vs avg $112) because demand is high + cancel rate is low. But in Jan when bookings are low &rarr; discount 10-15% to $76/night to drive occupancy.
     </div>
   </div>
 </section>
@@ -947,66 +1123,140 @@ new Chart(document.getElementById('confusionChart').getContext('2d'), {
 });
 
 // ============================================================
-// SLIDE 5: ADR BY MONTH (GROUPED BAR)
+// SLIDE 5: BEFORE / AFTER DYNAMIC PRICING
 // ============================================================
-let adrChart;
-function createADRChart(filter = 'both') {
-  const ctx = document.getElementById('adrChart').getContext('2d');
-  if (adrChart) adrChart.destroy();
 
-  const datasets = [];
-  if (filter === 'both' || filter === 'city') {
-    datasets.push({
-      label: 'City Hotel ADR ($)',
-      data: ADR_DATA.city,
-      backgroundColor: 'rgba(45,45,45,0.75)',
-      borderRadius: 6,
-      borderSkipped: false
-    });
-  }
-  if (filter === 'both' || filter === 'resort') {
-    datasets.push({
-      label: 'Resort Hotel ADR ($)',
-      data: ADR_DATA.resort,
-      backgroundColor: 'rgba(52,152,219,0.65)',
-      borderRadius: 6,
-      borderSkipped: false
-    });
-  }
+// Flat rate baseline (avg across all months)
+const FLAT_CITY = 112;
+const FLAT_RESORT = 85;
 
-  adrChart = new Chart(ctx, {
+// Dynamic pricing (data-driven adjustments)
+const DYNAMIC_DATA = {
+  city:   [82, 90, 107, 119, 122, 130, 147, 155, 120, 104, 85, 88],
+  resort: [58, 65, 75, 79, 82, 100, 115, 122, 88, 73, 62, 64]
+};
+
+function createBeforeChart() {
+  const ctx = document.getElementById('adrBeforeChart').getContext('2d');
+  new Chart(ctx, {
     type: 'bar',
-    data: { labels: MONTHS, datasets },
+    data: {
+      labels: MONTHS,
+      datasets: [
+        {
+          label: 'City Hotel (Flat $112)',
+          data: Array(12).fill(FLAT_CITY),
+          backgroundColor: 'rgba(153,153,153,0.4)',
+          borderRadius: 6, borderSkipped: false, borderWidth: 2,
+          borderColor: 'rgba(153,153,153,0.6)', borderDash: [4, 4]
+        },
+        {
+          label: 'Resort Hotel (Flat $85)',
+          data: Array(12).fill(FLAT_RESORT),
+          backgroundColor: 'rgba(153,153,153,0.2)',
+          borderRadius: 6, borderSkipped: false, borderWidth: 2,
+          borderColor: 'rgba(153,153,153,0.4)', borderDash: [4, 4]
+        },
+        {
+          label: 'City Hotel Actual ADR',
+          data: ADR_DATA.city,
+          backgroundColor: ADR_DATA.city.map(v => v > FLAT_CITY ? 'rgba(39,174,96,0.25)' : 'rgba(231,76,60,0.25)'),
+          borderColor: ADR_DATA.city.map(v => v > FLAT_CITY ? '#27AE60' : '#E74C3C'),
+          borderWidth: 2, borderRadius: 6, borderSkipped: false
+        }
+      ]
+    },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: { position: 'top' },
+        title: { display: true, text: 'BEFORE: Flat Rate vs Actual Market Price', font: { size: 14, weight: 600 }, color: '#2D2D2D', padding: { bottom: 12 } },
+        subtitle: { display: true, text: 'Gray bars = flat rate hotels charge | Colored bars = what the market actually pays', font: { size: 12, weight: 300 }, color: '#999', padding: { bottom: 16 } },
+        legend: { position: 'top', labels: { font: { size: 11 } } },
         tooltip: {
           backgroundColor: '#2D2D2D',
-          callbacks: { label: ctx => ' ' + ctx.dataset.label + ': $' + ctx.raw }
-        },
-        annotation: undefined
+          callbacks: {
+            label: function(ctx) { return ' ' + ctx.dataset.label + ': $' + ctx.raw; },
+            afterBody: function(items) {
+              const idx = items[0].dataIndex;
+              const actual = ADR_DATA.city[idx];
+              const diff = actual - FLAT_CITY;
+              if (diff > 0) return '\n  Missed revenue: +$' + diff + '/night (underpriced)';
+              if (diff < 0) return '\n  Lost bookings: $' + Math.abs(diff) + '/night too expensive';
+              return '';
+            }
+          }
+        }
       },
       scales: {
-        y: {
-          beginAtZero: false, min: 50,
-          title: { display: true, text: 'ADR ($)', color: '#999' },
-          grid: { color: 'rgba(0,0,0,0.04)' },
-          ticks: { callback: v => '$' + v }
-        },
+        y: { beginAtZero: false, min: 50, max: 170, title: { display: true, text: 'ADR ($)', color: '#999' }, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { callback: v => '$' + v } },
         x: { grid: { display: false } }
       }
     }
   });
 }
-createADRChart('both');
 
-function setPricingFilter(filter, btn) {
-  document.querySelectorAll('#slide5Filter .filter-btn').forEach(b => b.classList.remove('active'));
+function createAfterChart() {
+  const ctx = document.getElementById('adrAfterChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: MONTHS,
+      datasets: [
+        {
+          label: 'City Hotel Dynamic Price',
+          data: DYNAMIC_DATA.city,
+          backgroundColor: DYNAMIC_DATA.city.map((v, i) => v > ADR_DATA.city[i] ? 'rgba(39,174,96,0.7)' : v < ADR_DATA.city[i] ? 'rgba(52,152,219,0.6)' : 'rgba(45,45,45,0.5)'),
+          borderRadius: 6, borderSkipped: false
+        },
+        {
+          label: 'Resort Hotel Dynamic Price',
+          data: DYNAMIC_DATA.resort,
+          backgroundColor: DYNAMIC_DATA.resort.map((v, i) => v > ADR_DATA.resort[i] ? 'rgba(39,174,96,0.45)' : v < ADR_DATA.resort[i] ? 'rgba(52,152,219,0.35)' : 'rgba(45,45,45,0.3)'),
+          borderRadius: 6, borderSkipped: false
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        title: { display: true, text: 'AFTER: Dynamic Pricing (Data-Driven)', font: { size: 14, weight: 600 }, color: '#27AE60', padding: { bottom: 12 } },
+        subtitle: { display: true, text: 'Green = premium (high demand) | Blue = discount (drive occupancy)', font: { size: 12, weight: 300 }, color: '#999', padding: { bottom: 16 } },
+        legend: { position: 'top', labels: { font: { size: 11 } } },
+        tooltip: {
+          backgroundColor: '#2D2D2D',
+          callbacks: {
+            label: function(ctx) { return ' ' + ctx.dataset.label + ': $' + ctx.raw; },
+            afterBody: function(items) {
+              const idx = items[0].dataIndex;
+              const oldCity = FLAT_CITY;
+              const newCity = DYNAMIC_DATA.city[idx];
+              const diff = newCity - oldCity;
+              const sign = diff >= 0 ? '+' : '';
+              return '\n  vs Flat Rate: ' + sign + '$' + diff + '/night (' + sign + Math.round(diff/oldCity*100) + '%)';
+            }
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: false, min: 50, max: 170, title: { display: true, text: 'ADR ($)', color: '#999' }, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { callback: v => '$' + v } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// Initialize both charts
+createBeforeChart();
+createAfterChart();
+
+// Toggle before/after
+function switchView(view, btn) {
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  createADRChart(filter);
+  document.getElementById('panel-before').classList.toggle('active', view === 'before');
+  document.getElementById('panel-after').classList.toggle('active', view === 'after');
 }
 </script>
 
