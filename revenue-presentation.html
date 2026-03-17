@@ -378,6 +378,16 @@
     .factor-pill-label { font-size: 13px; }
     .contact-link { font-size: 13px; padding: 6px 14px; }
   }
+
+  /* === SLIDE 8: PROFITABILITY === */
+  .sec-dark .cmp-table th { background: var(--white); color: var(--dark); }
+  .sec-dark .cmp-table td { color: var(--white); border-bottom-color: rgba(255,255,255,0.1); }
+  .sec-dark .cmp-table tr:nth-child(even) td { background: rgba(255,255,255,0.05); }
+  .sec-dark .cmp-table tr:nth-child(odd) td { background: transparent; }
+  .profit-chart-box {
+    background: rgba(255,255,255,0.06); border-radius: 12px; padding: 24px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
 </style>
 </head>
 <body>
@@ -399,6 +409,7 @@
   <button class="nav-dot" onclick="scrollToSlide(4)"></button>
   <button class="nav-dot" onclick="scrollToSlide(5)"></button>
   <button class="nav-dot" onclick="scrollToSlide(6)"></button>
+  <button class="nav-dot" onclick="scrollToSlide(7)"></button>
 </nav>
 
 
@@ -408,7 +419,7 @@
 <section id="slide1">
   <div class="container">
     <div class="reveal">
-      <div class="slide-num">01 / 07</div>
+      <div class="slide-num">01 / 08</div>
       <div data-lang="th">
         <h2>ยอดจองพุ่ง แต่ทำไมกำไรเท่าเดิม?</h2>
         <p class="sec-desc">วิเคราะห์ข้อมูลจริง 119,390 การจองจากโรงแรม 2 แห่ง (City Hotel + Resort Hotel) ช่วง 2015-2017 พบว่า 37% ถูกยกเลิก — เท่ากับห้องว่างเปล่า ~56 ห้อง/วัน คิดเป็นรายได้ที่หายไป $16.7M ต่อปี เช่น เดือน ส.ค. มียอดจอง 13,877 ครั้ง แต่รายได้จริงได้แค่ $4.9M จาก potential $7.8M</p>
@@ -471,7 +482,7 @@
 <section class="sec-light" id="slide2">
   <div class="container">
     <div class="reveal">
-      <div class="slide-num">02 / 07</div>
+      <div class="slide-num">02 / 08</div>
       <div data-lang="th">
         <h2>32 คอลัมน์ที่มากกว่าแค่บันทึกการจอง</h2>
         <p class="sec-desc">ข้อมูลที่โรงแรมเก็บอยู่แล้วในระบบ PMS (Property Management System) ทุกวัน — เราจัดกลุ่ม 9 ตัวแปรสำคัญเป็น 3 มิติ ที่ช่วยแยกแขกที่จะมาจริงออกจากแขกที่จะยกเลิก</p>
@@ -562,7 +573,7 @@
 <section id="slide3">
   <div class="container">
     <div class="reveal">
-      <div class="slide-num">03 / 07</div>
+      <div class="slide-num">03 / 08</div>
       <div data-lang="th">
         <h2>ใครคือแขกตัวจริง? และใครคือ "แขกที่หายไป"</h2>
         <p class="sec-desc">จาก 44,223 การจองที่ยกเลิก เราพบ 2 สัญญาณที่แยกแขกตัวจริงกับแขกที่หายไปได้ชัดเจน — ลองนึกภาพ: ลูกค้า A จองล่วงหน้า 1 สัปดาห์และขอเตียงเสริม (เสี่ยงต่ำ 5%) vs ลูกค้า B จองล่วงหน้า 8 เดือนไม่มี request ใดๆ (เสี่ยงสูง 70%+)</p>
@@ -611,7 +622,7 @@
 <section class="sec-dark" id="slide4">
   <div class="container">
     <div class="reveal">
-      <div class="slide-num">04 / 07</div>
+      <div class="slide-num">04 / 08</div>
       <div data-lang="th">
         <h2>กู้รายได้คืน 15-25% ด้วยระบบทำนายอัจฉริยะ</h2>
         <p class="sec-desc">สร้างโมเดล XGBoost (Machine Learning) ที่ให้คะแนนความเสี่ยงทุกการจองตั้งแต่วินาทีที่จองเข้ามา — พูดง่ายๆ คือ ระบบจะบอกได้ทันทีว่า "การจองนี้มีโอกาส 85% ที่จะยกเลิก" ก่อนที่แขกจะยกเลิกจริง เพื่อให้ทีมรับมือได้ทัน</p>
@@ -663,7 +674,7 @@
 <section id="slide5">
   <div class="container">
     <div class="reveal">
-      <div class="slide-num">05 / 07</div>
+      <div class="slide-num">05 / 08</div>
       <div data-lang="th">
         <h2>Dynamic Pricing: ก่อน vs หลังปรับราคา</h2>
         <p class="sec-desc">โรงแรมส่วนใหญ่ตั้งราคาเท่ากันตลอดปี (Flat Rate) — แต่ข้อมูลบอกว่าราคาควรเปลี่ยนตาม 4 ปัจจัย ดูเปรียบเทียบก่อน-หลังปรับราคาจากข้อมูลจริง</p>
@@ -834,7 +845,7 @@
 <section class="sec-dark" id="slide6">
   <div class="container">
     <div class="reveal">
-      <div class="slide-num" style="color:rgba(255,255,255,0.3);">06 / 07</div>
+      <div class="slide-num" style="color:rgba(255,255,255,0.3);">06 / 08</div>
       <div data-lang="th">
         <h2>สรุป: ผลลัพธ์ที่จับต้องได้</h2>
         <p class="sec-desc">จากข้อมูลการจอง 119,390 รายการ สร้าง Framework ครบวงจร — ทำนายความเสี่ยง, ตั้งราคาอัจฉริยะ, และแบ่งกลุ่มลูกค้า ทั้งหมดสร้างจากข้อมูลจริง พร้อมนำไปปรับใช้กับโรงแรมใดก็ได้ที่มีระบบ PMS</p>
@@ -905,7 +916,7 @@
 <section class="sec-light" id="slide7">
   <div class="container">
     <div class="reveal">
-      <div class="slide-num">07 / 07</div>
+      <div class="slide-num">07 / 08</div>
       <div data-lang="th">
         <h2>ลองทำนายเอง: Cancellation Risk Predictor</h2>
         <p class="sec-desc">จำลองการทำนายจากโมเดล XGBoost — กรอกข้อมูลการจองแล้วดูว่าระบบ AI จะประเมินความเสี่ยงอย่างไร พร้อมปัจจัยที่ส่งผลมากที่สุดและคำแนะนำ</p>
@@ -1003,6 +1014,141 @@
           <div id="factorBarsContainer"></div>
         </div>
         <div class="recommendation-box" id="recommendBox"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!-- SLIDE 8: PROFITABILITY ANALYSIS                                 -->
+<!-- ============================================================== -->
+<section class="sec-dark" id="slide8">
+  <div class="container">
+    <!-- A: Headline -->
+    <div class="reveal">
+      <div class="slide-num" style="color:rgba(255,255,255,0.3);">08 / 08</div>
+      <div data-lang="th">
+        <h2>Profitability Analysis: เปลี่ยนยอดจองให้เป็นกำไรสุทธิ</h2>
+        <p class="sec-desc">Gross Revenue ไม่ใช่เงินที่เข้ากระเป๋าจริง — เมื่อหักคอมมิชชั่น OTA และต้นทุนการยกเลิก Direct Booking สร้างกำไรสุทธิสูงกว่าถึง 2 เท่า</p>
+      </div>
+      <div data-lang="en">
+        <h2>Profitability Analysis: Turning Bookings into Bottom-Line Profit</h2>
+        <p class="sec-desc">Gross Revenue isn't what reaches your pocket — after OTA commissions and cancellation costs, Direct Booking generates up to 2x more net profit.</p>
+      </div>
+    </div>
+
+    <!-- B: Net Revenue Bar Chart -->
+    <div class="reveal">
+      <div class="profit-chart-box">
+        <canvas id="profitChart" height="280"></canvas>
+      </div>
+    </div>
+
+    <!-- C: The Real Cost of OTA Table -->
+    <div class="reveal" style="margin-top:32px;">
+      <div data-lang="th">
+        <table class="cmp-table">
+          <thead><tr><th>Factor</th><th>OTA</th><th>Direct</th><th>Impact</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Commission</strong></td>
+              <td style="color:var(--red);">-15% to -20%</td>
+              <td style="color:var(--green);">0%</td>
+              <td>หักทุกการจอง</td>
+            </tr>
+            <tr>
+              <td><strong>Cancellation Rate</strong></td>
+              <td style="color:var(--red);">36.7%</td>
+              <td style="color:var(--green);">15.0%</td>
+              <td>OTA เสียห้องมากกว่า 2.4x</td>
+            </tr>
+            <tr>
+              <td><strong>Net per $114 Booking</strong></td>
+              <td style="color:var(--red);">~$60</td>
+              <td style="color:var(--green);">~$97</td>
+              <td>Direct ได้จริงมากกว่า <strong>+62%</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Operational Load</strong></td>
+              <td style="color:var(--red);">สูง (หาแขกใหม่ตลอด)</td>
+              <td style="color:var(--green);">ต่ำ (แขกเก่ากลับมา)</td>
+              <td>ลดต้นทุน acquisition</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div data-lang="en">
+        <table class="cmp-table">
+          <thead><tr><th>Factor</th><th>OTA</th><th>Direct</th><th>Impact</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Commission</strong></td>
+              <td style="color:var(--red);">-15% to -20%</td>
+              <td style="color:var(--green);">0%</td>
+              <td>Deducted on every booking</td>
+            </tr>
+            <tr>
+              <td><strong>Cancellation Rate</strong></td>
+              <td style="color:var(--red);">36.7%</td>
+              <td style="color:var(--green);">15.0%</td>
+              <td>OTA loses 2.4x more rooms</td>
+            </tr>
+            <tr>
+              <td><strong>Net per $114 Booking</strong></td>
+              <td style="color:var(--red);">~$60</td>
+              <td style="color:var(--green);">~$97</td>
+              <td>Direct earns <strong>+62%</strong> more</td>
+            </tr>
+            <tr>
+              <td><strong>Operational Load</strong></td>
+              <td style="color:var(--red);">High (constant acquisition)</td>
+              <td style="color:var(--green);">Low (repeat guests)</td>
+              <td>Lower acquisition cost</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- D: Strategic Recommendations — 3 Cards -->
+    <div class="reveal" style="margin-top:32px;">
+      <div class="cards-3 stagger">
+        <div class="card" style="background: rgba(39,174,96,0.15); border: 1px solid rgba(39,174,96,0.3);">
+          <div class="card-icon">&#127919;</div>
+          <h3 style="color: var(--green);" data-lang="th">Convert OTA &rarr; Direct</h3>
+          <h3 style="color: var(--green);" data-lang="en">Convert OTA &rarr; Direct</h3>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="th">ใช้ OTA เป็นช่อง "หาแขก" — แต่เปลี่ยนให้จองตรงในครั้งถัดไป ด้วย loyalty program + exclusive rate</p>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="en">Use OTA as acquisition — convert to direct booking next time via loyalty program + exclusive rates</p>
+        </div>
+        <div class="card" style="background: rgba(52,152,219,0.15); border: 1px solid rgba(52,152,219,0.3);">
+          <div class="card-icon">&#129302;</div>
+          <h3 style="color: var(--blue);" data-lang="th">AI-Powered Guest Screening</h3>
+          <h3 style="color: var(--blue);" data-lang="en">AI-Powered Guest Screening</h3>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="th">ใช้ AI คัดกรองแขก Intent สูง — แขก Direct + มี special request + เคยมาก่อน = ยกเลิกต่ำสุด</p>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="en">Use AI to screen high-intent guests — Direct + special requests + repeat = lowest cancellation</p>
+        </div>
+        <div class="card" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);">
+          <div class="card-icon">&#128176;</div>
+          <h3 style="color: var(--white);" data-lang="th">100% Profit Retention</h3>
+          <h3 style="color: var(--white);" data-lang="en">100% Profit Retention</h3>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="th">Direct Booking = ไม่มีคอมมิชชั่น + ยกเลิกน้อย + แขกเก่ากลับมา &rarr; กำไรสุทธิเพิ่ม 62% ต่อ booking</p>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="en">Direct = zero commission + low cancellation + repeat guests &rarr; net profit +62% per booking</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- E: Killer Closing Statement -->
+    <div class="reveal" style="margin-top:40px;">
+      <div class="cta-box">
+        <h3 data-lang="th">Data-Driven Revenue Management</h3>
+        <h3 data-lang="en">Data-Driven Revenue Management</h3>
+        <p data-lang="th" style="max-width:700px; margin:8px auto 0; font-size:16px; line-height:1.8; color:rgba(255,255,255,0.7);">
+          "Revenue ที่โตแต่ตัวเลข ไม่มีความหมาย ถ้า Bottom Line ไม่โตตาม — Data-Driven Revenue Management คือการทำให้ทุกบาทที่จองเข้ามา กลายเป็นกำไรที่จับต้องได้จริง"
+        </p>
+        <p data-lang="en" style="max-width:700px; margin:8px auto 0; font-size:16px; line-height:1.8; color:rgba(255,255,255,0.7);">
+          "Revenue growth means nothing if it doesn't reach the bottom line — Data-Driven Revenue Management turns every booking dollar into real, measurable profit."
+        </p>
       </div>
     </div>
   </div>
@@ -1565,6 +1711,64 @@ function setPricingFilter(type, btn) {
   createPricingChart(type);
   createDemandChart(type);
 }
+
+// ============================================================
+// SLIDE 8: PROFITABILITY CHART
+// ============================================================
+new Chart(document.getElementById('profitChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['OTA Channel', 'Direct Booking'],
+    datasets: [
+      {
+        label: 'Gross Revenue',
+        data: [114, 114],
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        borderRadius: 6,
+        borderSkipped: false
+      },
+      {
+        label: 'Net Revenue',
+        data: [60, 97],
+        backgroundColor: ['#E74C3C', '#27AE60'],
+        borderRadius: 6,
+        borderSkipped: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Gross Revenue vs Net Revenue per Booking ($114 ADR)',
+        font: { size: 15, weight: 600 }, color: '#fff', padding: { bottom: 16 }
+      },
+      legend: { position: 'top', labels: { color: 'rgba(255,255,255,0.7)', font: { size: 12 }, padding: 16 } },
+      tooltip: {
+        backgroundColor: '#2D2D2D',
+        callbacks: {
+          label: function(ctx) {
+            return ' ' + ctx.dataset.label + ': $' + ctx.raw;
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true, max: 140,
+        title: { display: true, text: 'Revenue per Booking ($)', color: 'rgba(255,255,255,0.5)', font: { size: 12 } },
+        grid: { color: 'rgba(255,255,255,0.06)' },
+        ticks: { callback: v => '$' + v, color: 'rgba(255,255,255,0.5)' }
+      },
+      x: {
+        grid: { display: false },
+        ticks: { color: 'rgba(255,255,255,0.7)', font: { size: 13 } }
+      }
+    }
+  }
+});
 
 // ============================================================
 // SLIDE 7: SEGMENTED BUTTONS
