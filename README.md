@@ -9,6 +9,7 @@
 ![Seaborn](https://img.shields.io/badge/Seaborn-Visualization-9B59B6)
 
 [![Presentation](https://img.shields.io/badge/Presentation-View%20Slides-FF2800?style=for-the-badge)](https://natpaphonnn.github.io/Hotel-booking-demand/presentation.html)
+[![Revenue Presentation](https://img.shields.io/badge/Revenue%20Presentation-Interactive%20Charts-2D2D2D?style=for-the-badge)](https://natpaphonnn.github.io/Hotel-booking-demand/revenue-presentation.html)
 
 ---
 
