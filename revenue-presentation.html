@@ -198,24 +198,48 @@
   .predictor-container { max-width: 900px; margin: 0 auto; }
   .predictor-form {
     display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px;
-    background: var(--white); border-radius: 12px; padding: 28px 24px;
-    border: 1px solid var(--border);
+    background: #2D2D2D; border-radius: 12px; padding: 28px 24px;
+    border: 1px solid #444;
   }
   .form-group { display: flex; flex-direction: column; gap: 4px; }
-  .form-group label { font-size: 14px; font-weight: 500; }
-  .form-group .form-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
-  .form-group input, .form-group select {
-    padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
-    font-family: 'Prompt'; font-size: 14px; font-weight: 300;
-    background: var(--light); color: var(--dark); transition: border-color 0.2s;
+  .form-group label { font-size: 14px; font-weight: 500; color: #fff; }
+  .form-group .form-desc { font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.4; }
+  .field-tag {
+    display: inline-block; font-family: 'Courier New', monospace; font-size: 11px;
+    background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); padding: 2px 8px;
+    border-radius: 4px; margin-top: 2px; width: fit-content; letter-spacing: 0.5px;
   }
-  .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--dark); }
+  .form-group input, .form-group select {
+    padding: 10px 12px; border: 1px solid #444; border-radius: 8px;
+    font-family: 'Prompt'; font-size: 14px; font-weight: 300;
+    background: #1a1a1a; color: #fff; transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--green); }
+  .form-group select option { background: #1a1a1a; color: #fff; }
+  /* Checkbox grid for special requests */
+  .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+  .check-item {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    background: #1a1a1a; border: 1px solid #444; border-radius: 8px;
+    cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  }
+  .check-item:hover { border-color: rgba(255,255,255,0.3); }
+  .check-item input[type="checkbox"] {
+    width: 16px; height: 16px; accent-color: var(--green); cursor: pointer;
+    background: #1a1a1a; border: 1px solid #444; flex-shrink: 0;
+  }
+  .check-item span {
+    font-size: 13px; color: rgba(255,255,255,0.8); font-weight: 300; cursor: pointer;
+  }
+  .check-item:has(input:checked) { border-color: var(--green); background: rgba(39,174,96,0.1); }
+  .form-group-full { grid-column: 1 / -1; }
   .predict-btn {
     grid-column: 1 / -1; padding: 14px 36px; background: var(--green); color: white;
     border: none; border-radius: 8px; font-family: 'Prompt'; font-weight: 600;
     font-size: 16px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
     margin-top: 8px;
   }
+  .predict-btn .btn-icon { font-family: 'Courier New', monospace; margin-right: 8px; opacity: 0.7; }
   .predict-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(39,174,96,0.3); }
   .result-panel {
     background: var(--light); border-radius: 12px; padding: 32px 28px;
@@ -259,6 +283,7 @@
 
   @media (max-width: 900px) {
     .predictor-form { grid-template-columns: 1fr; }
+    .checkbox-grid { grid-template-columns: 1fr; }
     .result-top { flex-direction: column; text-align: center; }
     .factor-bar-label { min-width: 100px; font-size: 12px; }
   }
@@ -848,11 +873,6 @@
     </div>
 
     <div style="text-align:center; margin-top:40px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.1);">
-      <div class="contact-bar" style="margin-bottom:20px;">
-        <a href="mailto:natpaphon.nukhunthod@gmail.com" class="contact-link">
-          &#9993; natpaphon.nukhunthod@gmail.com
-        </a>
-      </div>
       <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:12px;">
         <span style="font-size:12px; color:rgba(255,255,255,0.3); padding:4px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:4px;">Python</span>
         <span style="font-size:12px; color:rgba(255,255,255,0.3); padding:4px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:4px;">XGBoost</span>
@@ -886,6 +906,7 @@
       <form class="predictor-form" onsubmit="event.preventDefault(); predict();">
         <div class="form-group">
           <label><span data-lang="th">ประเภทโรงแรม</span><span data-lang="en">Hotel Type</span></label>
+          <span class="field-tag">hotel_type</span>
           <select id="p-hotel">
             <option value="city">City Hotel</option>
             <option value="resort">Resort Hotel</option>
@@ -893,21 +914,25 @@
         </div>
         <div class="form-group">
           <label>Lead Time</label>
+          <span class="field-tag">lead_time</span>
           <input type="number" id="p-lead" value="90" min="0" max="800" step="1">
           <div class="form-desc"><span data-lang="th">จองล่วงหน้ากี่วัน (0–800)</span><span data-lang="en">Days booked in advance (0–800)</span></div>
         </div>
         <div class="form-group">
           <label><span data-lang="th">ADR (ราคาห้อง/คืน)</span><span data-lang="en">ADR (Rate/Night)</span></label>
+          <span class="field-tag">adr</span>
           <input type="number" id="p-adr" value="100" min="0" max="600" step="1">
           <div class="form-desc"><span data-lang="th">ราคาเฉลี่ยต่อคืน $0–600</span><span data-lang="en">Average daily rate $0–600</span></div>
         </div>
         <div class="form-group">
           <label><span data-lang="th">จำนวนคืน</span><span data-lang="en">Total Nights</span></label>
+          <span class="field-tag">stays_total</span>
           <input type="number" id="p-nights" value="3" min="1" max="30" step="1">
           <div class="form-desc"><span data-lang="th">รวม weeknight + weekend (1–30)</span><span data-lang="en">Weeknight + weekend combined (1–30)</span></div>
         </div>
         <div class="form-group">
           <label>Market Segment</label>
+          <span class="field-tag">market_segment</span>
           <select id="p-segment">
             <option value="direct">Direct</option>
             <option value="corporate">Corporate</option>
@@ -919,6 +944,7 @@
         </div>
         <div class="form-group">
           <label>Deposit Type</label>
+          <span class="field-tag">deposit_type</span>
           <select id="p-deposit">
             <option value="no_deposit" selected>No Deposit</option>
             <option value="non_refund">Non Refund</option>
@@ -926,18 +952,26 @@
           </select>
           <div class="form-desc"><span data-lang="th">ประเภทมัดจำ</span><span data-lang="en">Deposit type</span></div>
         </div>
-        <div class="form-group">
+        <div class="form-group form-group-full">
           <label>Special Requests</label>
-          <input type="number" id="p-requests" value="1" min="0" max="5" step="1">
-          <div class="form-desc"><span data-lang="th">คำขอพิเศษ เช่น เตียงเสริม (0–5)</span><span data-lang="en">e.g. extra bed, high floor (0–5)</span></div>
+          <span class="field-tag">total_of_special_requests</span>
+          <div class="form-desc" style="margin-bottom:4px;"><span data-lang="th">เลือกคำขอพิเศษที่ต้องการ</span><span data-lang="en">Select desired special requests</span></div>
+          <div class="checkbox-grid">
+            <label class="check-item"><input type="checkbox" class="req-check"><span><span data-lang="th">Extra Bed / เตียงเสริม</span><span data-lang="en">Extra Bed</span></span></label>
+            <label class="check-item"><input type="checkbox" class="req-check"><span><span data-lang="th">High Floor / ห้องชั้นสูง</span><span data-lang="en">High Floor</span></span></label>
+            <label class="check-item"><input type="checkbox" class="req-check"><span><span data-lang="th">Early Check-in / เช็คอินก่อนเวลา</span><span data-lang="en">Early Check-in</span></span></label>
+            <label class="check-item"><input type="checkbox" class="req-check"><span><span data-lang="th">Late Check-out / เช็คเอาท์ช้า</span><span data-lang="en">Late Check-out</span></span></label>
+            <label class="check-item"><input type="checkbox" class="req-check"><span><span data-lang="th">Sea View / วิวทะเล</span><span data-lang="en">Sea View</span></span></label>
+          </div>
         </div>
         <div class="form-group">
           <label>Previous Cancellations</label>
+          <span class="field-tag">previous_cancellations</span>
           <input type="number" id="p-prevcancel" value="0" min="0" max="20" step="1">
-          <div class="form-desc"><span data-lang="th">ประวัติยกเลิกของแขก (0–20)</span><span data-lang="en">Guest's cancellation history (0–20)</span></div>
+          <div class="form-desc"><span data-lang="th">ประวัติยกเลิกของแขก (0–20 ครั้ง)</span><span data-lang="en">Guest's cancellation history (0–20 times)</span></div>
         </div>
         <button type="submit" class="predict-btn">
-          <span data-lang="th">&#9889; ทำนายความเสี่ยง</span><span data-lang="en">&#9889; Predict Risk</span>
+          <span class="btn-icon">&gt;_</span><span data-lang="th">ทำนายความเสี่ยง</span><span data-lang="en">Predict Risk</span>
         </button>
       </form>
 
@@ -1528,7 +1562,7 @@ function predict() {
   const segment = document.getElementById('p-segment').value;
   const hotel = document.getElementById('p-hotel').value;
   const adr = Math.max(0, Math.min(600, +document.getElementById('p-adr').value || 0));
-  const requests = Math.max(0, Math.min(5, +document.getElementById('p-requests').value || 0));
+  const requests = document.querySelectorAll('.req-check:checked').length;
   const isEn = document.body.classList.contains('en');
 
   // Scoring (simulated XGBoost feature importance)
@@ -1650,6 +1684,14 @@ function predict() {
   });
 }
 </script>
+
+<footer style="background:#1a1a1a; text-align:center; padding:32px 20px; border-top:1px solid #333;">
+  <div class="contact-bar">
+    <a href="mailto:natpaphon.nukhunthod@gmail.com" class="contact-link">
+      &#9993; natpaphon.nukhunthod@gmail.com
+    </a>
+  </div>
+</footer>
 
 </body>
 </html>
