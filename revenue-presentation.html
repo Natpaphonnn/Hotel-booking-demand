@@ -1005,25 +1005,22 @@
     <div class="reveal" style="margin-top:32px;">
       <div class="cards-3 stagger">
         <div class="card" style="background: rgba(39,174,96,0.15); border: 1px solid rgba(39,174,96,0.3);">
-          <div class="card-icon">&#127919;</div>
           <h3 style="color: var(--green);" data-lang="th">Convert OTA &rarr; Direct</h3>
           <h3 style="color: var(--green);" data-lang="en">Convert OTA &rarr; Direct</h3>
-          <p style="color: rgba(255,255,255,0.7);" data-lang="th">ใช้ OTA เป็นช่อง "หาแขก" — แต่เปลี่ยนให้จองตรงในครั้งถัดไป ด้วย loyalty program + exclusive rate</p>
-          <p style="color: rgba(255,255,255,0.7);" data-lang="en">Use OTA as acquisition — convert to direct booking next time via loyalty program + exclusive rates</p>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="th">ใช้ OTA เป็นช่องทาง "หาแขกใหม่" เท่านั้น — เมื่อแขกเข้าพักครั้งแรกผ่าน OTA ให้เสนอ loyalty program, exclusive rate สำหรับการจองตรงครั้งถัดไป และสิทธิพิเศษ เช่น late check-out ฟรี หรือ room upgrade เพื่อดึงแขกออกจาก OTA มาจองตรงกับโรงแรม ลดค่าคอมมิชชั่น 15-20% ในทุกการจองครั้งต่อไป</p>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="en">Use OTA purely as a guest acquisition channel — once a guest stays via OTA for the first time, offer them a loyalty program, exclusive direct-only rates, and perks like free late check-out or room upgrades to convert them to direct booking next time. This eliminates the 15-20% OTA commission on every future booking from that guest.</p>
         </div>
         <div class="card" style="background: rgba(52,152,219,0.15); border: 1px solid rgba(52,152,219,0.3);">
-          <div class="card-icon">&#129302;</div>
           <h3 style="color: var(--blue);" data-lang="th">AI-Powered Guest Screening</h3>
           <h3 style="color: var(--blue);" data-lang="en">AI-Powered Guest Screening</h3>
-          <p style="color: rgba(255,255,255,0.7);" data-lang="th">ใช้ AI คัดกรองแขก Intent สูง — แขก Direct + มี special request + เคยมาก่อน = ยกเลิกต่ำสุด</p>
-          <p style="color: rgba(255,255,255,0.7);" data-lang="en">Use AI to screen high-intent guests — Direct + special requests + repeat = lowest cancellation</p>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="th">ใช้โมเดล AI (XGBoost 94.5% accuracy) คัดกรองแขกตามระดับ Intent — แขกที่จองตรง + มี special request 3 อย่างขึ้นไป + เคยเข้าพักมาก่อน = กลุ่มที่ยกเลิกต่ำสุด (ต่ำกว่า 5%) ในทางกลับกัน แขกที่จอง OTA + ไม่วางมัดจำ + จองล่วงหน้านานกว่า 6 เดือน = ยกเลิกสูงถึง 70% ระบบจะให้คะแนนความเสี่ยงทุกการจองแบบ real-time เพื่อจัดการ overbooking และ outreach ได้ทันที</p>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="en">Use the AI model (XGBoost, 94.5% accuracy) to screen guests by intent level — guests who book direct + have 3+ special requests + are repeat visitors show the lowest cancellation rate (under 5%). Conversely, OTA guests + no deposit + 6+ month lead time cancel up to 70%. The system scores every booking's risk in real-time, enabling proactive overbooking management and targeted guest outreach before cancellations happen.</p>
         </div>
         <div class="card" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);">
-          <div class="card-icon">&#128176;</div>
           <h3 style="color: var(--white);" data-lang="th">100% Profit Retention</h3>
           <h3 style="color: var(--white);" data-lang="en">100% Profit Retention</h3>
-          <p style="color: rgba(255,255,255,0.7);" data-lang="th">Direct Booking = ไม่มีคอมมิชชั่น + ยกเลิกน้อย + แขกเก่ากลับมา &rarr; กำไรสุทธิเพิ่ม 62% ต่อ booking</p>
-          <p style="color: rgba(255,255,255,0.7);" data-lang="en">Direct = zero commission + low cancellation + repeat guests &rarr; net profit +62% per booking</p>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="th">Direct Booking = ไม่เสียค่าคอมมิชชั่นแม้แต่บาทเดียว + อัตรายกเลิกต่ำแค่ 15% (เทียบกับ OTA 36.7%) + แขกเก่ากลับมาซ้ำทำให้ต้นทุน acquisition ต่ำลง 5-7 เท่า &rarr; ผลลัพธ์คือกำไรสุทธิเพิ่มขึ้น 62% ต่อทุกการจอง ($97 vs $60 จาก ADR $114 เท่ากัน) โดยไม่ต้องเพิ่มจำนวนห้องหรือขึ้นราคา</p>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="en">Direct Booking = zero commission (not a single dollar lost) + only 15% cancellation rate (vs OTA's 36.7%) + repeat guests reduce acquisition cost by 5-7x &rarr; the result is 62% more net profit per booking ($97 vs $60 from the same $114 ADR) without adding rooms or raising prices.</p>
         </div>
       </div>
     </div>
