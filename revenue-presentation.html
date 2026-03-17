@@ -227,11 +227,11 @@
       <div class="slide-num">01 / 06</div>
       <div data-lang="th">
         <h2>ยอดจองพุ่ง แต่ทำไมกำไรเท่าเดิม?</h2>
-        <p class="sec-desc">119,390 การจอง แต่ 37% ถูกยกเลิก — เราเสียรายได้ $16.7M ต่อปี ปัญหานี้ซ่อนอยู่ในข้อมูลที่ทุกโรงแรมมีอยู่แล้ว</p>
+        <p class="sec-desc">วิเคราะห์ข้อมูลจริง 119,390 การจองจากโรงแรม 2 แห่ง (City Hotel + Resort Hotel) ช่วง 2015-2017 พบว่า 37% ถูกยกเลิก — เท่ากับห้องว่างเปล่า ~56 ห้อง/วัน คิดเป็นรายได้ที่หายไป $16.7M ต่อปี เช่น เดือน ส.ค. มียอดจอง 13,877 ครั้ง แต่รายได้จริงได้แค่ $4.9M จาก potential $7.8M</p>
       </div>
       <div data-lang="en">
         <h2>Bookings Are Up. Why Isn't Revenue?</h2>
-        <p class="sec-desc">119,390 bookings analyzed, yet 37% were canceled — $16.7M in lost revenue. The problem hides in data every hotel already has.</p>
+        <p class="sec-desc">Analyzed 119,390 real bookings from 2 hotels (City + Resort) over 2015-2017. 37% were canceled — that's ~56 empty rooms/day, $16.7M lost annually. Example: August had 13,877 bookings but actual revenue was only $4.9M out of a potential $7.8M.</p>
       </div>
     </div>
 
@@ -248,6 +248,13 @@
       </div>
     </div>
 
+    <div class="insight reveal" style="margin-top:16px;" data-lang="th">
+      <strong>Hover กราฟเพื่อดู insight รายเดือน</strong> — สังเกตว่ายอดจอง (เส้นเทา) พุ่งสูง ก.ค.-ส.ค. แต่ revenue จริง (เส้นแดง) ไม่ได้พุ่งตาม เพราะการยกเลิกกินรายได้ไปเกือบ 40% โดยเฉพาะช่วง High Season ที่ยกเลิกเยอะที่สุด เพราะลูกค้าจอง "ไว้ก่อน" หลายที่แล้วเลือกทีหลัง
+    </div>
+    <div class="insight reveal" style="margin-top:16px;" data-lang="en">
+      <strong>Hover the chart for monthly insights</strong> — Notice booking volume (gray) peaks in Jul-Aug, but actual revenue (red) doesn't keep up. Cancellations eat nearly 40% of revenue, especially in High Season when guests "hold" multiple reservations and decide later.
+    </div>
+
     <div class="stats-row reveal stagger">
       <div class="stat-card">
         <div class="stat-val" style="color:var(--red);" data-count="16.7" data-prefix="$" data-suffix="M">$0</div>
@@ -261,13 +268,13 @@
       </div>
       <div class="stat-card">
         <div class="stat-val" style="color:var(--blue);" data-count="42.7" data-prefix="$" data-suffix="M">$0</div>
-        <div class="stat-label" data-lang="th">รายได้ที่ควรได้</div>
-        <div class="stat-label" data-lang="en">Potential Revenue</div>
+        <div class="stat-label" data-lang="th">รายได้ที่ควรได้ (ถ้าไม่มีใครยกเลิก)</div>
+        <div class="stat-label" data-lang="en">Potential Revenue (if zero cancels)</div>
       </div>
       <div class="stat-card">
         <div class="stat-val" style="color:var(--green);" data-count="26.0" data-prefix="$" data-suffix="M">$0</div>
-        <div class="stat-label" data-lang="th">รายได้จริง</div>
-        <div class="stat-label" data-lang="en">Actual Revenue</div>
+        <div class="stat-label" data-lang="th">รายได้จริงที่ได้รับ</div>
+        <div class="stat-label" data-lang="en">Actual Revenue Collected</div>
       </div>
     </div>
   </div>
@@ -283,11 +290,11 @@
       <div class="slide-num">02 / 06</div>
       <div data-lang="th">
         <h2>32 คอลัมน์ที่มากกว่าแค่บันทึกการจอง</h2>
-        <p class="sec-desc">ข้อมูลทุกฟิลด์มีเรื่องเล่า — เราจัดกลุ่มตัวแปรสำคัญเป็น 3 มิติ เพื่อค้นหา pattern ที่นำไปสู่การยกเลิก</p>
+        <p class="sec-desc">ข้อมูลที่โรงแรมเก็บอยู่แล้วในระบบ PMS (Property Management System) ทุกวัน — เราจัดกลุ่ม 9 ตัวแปรสำคัญเป็น 3 มิติ ที่ช่วยแยกแขกที่จะมาจริงออกจากแขกที่จะยกเลิก</p>
       </div>
       <div data-lang="en">
         <h2>32 Columns That Tell More Than a Booking Log</h2>
-        <p class="sec-desc">Every field has a story. We grouped key variables into 3 dimensions to uncover patterns behind cancellations.</p>
+        <p class="sec-desc">Data that hotels already collect in their PMS every day. We grouped 9 key variables into 3 dimensions that separate guests who show up from those who cancel.</p>
       </div>
     </div>
 
@@ -299,18 +306,18 @@
         <div class="data-items">
           <div class="data-item">
             <div class="data-item-name">lead_time</div>
-            <div class="data-item-desc" data-lang="th">จำนวนวันที่จองล่วงหน้า — ยิ่งนาน ยิ่งเสี่ยง</div>
-            <div class="data-item-desc" data-lang="en">Days between booking and arrival — longer = higher risk</div>
+            <div class="data-item-desc" data-lang="th">จำนวนวันที่จองล่วงหน้า — เช่น ลูกค้าจองวันนี้ เข้าพักอีก 180 วัน ถือว่าเสี่ยงสูง (ยกเลิก 55%+) แต่จอง 7 วันก่อนเข้าพัก เสี่ยงต่ำมาก</div>
+            <div class="data-item-desc" data-lang="en">Days between booking and arrival — e.g. a guest booking 180 days ahead has 55%+ cancel risk, while 7 days ahead is very low risk</div>
           </div>
           <div class="data-item">
             <div class="data-item-name">arrival_date_month</div>
-            <div class="data-item-desc" data-lang="th">เดือนที่เข้าพัก — ฤดูกาลส่งผลต่อพฤติกรรม</div>
-            <div class="data-item-desc" data-lang="en">Arrival month — seasonality drives behavior</div>
+            <div class="data-item-desc" data-lang="th">เดือนที่เข้าพัก — เช่น ก.ค.-ส.ค. (High Season) มียอดจอง 12,000-14,000/เดือน แต่ พ.ย.-ธ.ค. เหลือแค่ ~6,800</div>
+            <div class="data-item-desc" data-lang="en">Arrival month — e.g. Jul-Aug (High Season) sees 12-14K bookings/month, while Nov-Dec drops to ~6,800</div>
           </div>
           <div class="data-item">
             <div class="data-item-name">stays_in_week/weekend</div>
-            <div class="data-item-desc" data-lang="th">จำนวนคืน — แยก weekday กับ weekend</div>
-            <div class="data-item-desc" data-lang="en">Night count — weekday vs weekend split</div>
+            <div class="data-item-desc" data-lang="th">จำนวนคืน — แยก weekday กับ weekend เช่น แขก Business มักอยู่ 2-3 คืน weekday ส่วน Leisure อยู่ยาว 5+ คืนรวม weekend</div>
+            <div class="data-item-desc" data-lang="en">Night count — e.g. Business guests stay 2-3 weekday nights, while Leisure guests stay 5+ nights including weekends</div>
           </div>
         </div>
       </div>
@@ -321,19 +328,19 @@
         </div>
         <div class="data-items">
           <div class="data-item">
-            <div class="data-item-name">adr</div>
-            <div class="data-item-desc" data-lang="th">ราคาเฉลี่ยต่อคืน — กุญแจสำคัญของ dynamic pricing</div>
-            <div class="data-item-desc" data-lang="en">Average Daily Rate — key to dynamic pricing</div>
+            <div class="data-item-name">adr (Average Daily Rate)</div>
+            <div class="data-item-desc" data-lang="th">ราคาเฉลี่ยต่อคืน — เช่น City Hotel เฉลี่ย $112/คืน ส่วน Resort $85/คืน ข้อมูลนี้ใช้ตั้ง dynamic pricing ตามฤดูกาลได้</div>
+            <div class="data-item-desc" data-lang="en">Avg price per night — e.g. City Hotel avg $112/night, Resort $85/night. Used to build dynamic pricing by season.</div>
           </div>
           <div class="data-item">
             <div class="data-item-name">market_segment</div>
-            <div class="data-item-desc" data-lang="th">ช่องทางการจอง: OTA, Direct, Corporate, Groups</div>
-            <div class="data-item-desc" data-lang="en">Booking channel: OTA, Direct, Corporate, Groups</div>
+            <div class="data-item-desc" data-lang="th">ช่องทางการจอง — OTA (เช่น Booking.com) ยกเลิก 40%, Direct ยกเลิกแค่ 15%, Groups ยกเลิกสูงสุด 61%</div>
+            <div class="data-item-desc" data-lang="en">Booking channel — OTA (e.g. Booking.com) cancels 40%, Direct only 15%, Groups highest at 61%</div>
           </div>
           <div class="data-item">
             <div class="data-item-name">deposit_type</div>
-            <div class="data-item-desc" data-lang="th">ประเภทมัดจำ — No Deposit ยกเลิกง่ายกว่ามาก</div>
-            <div class="data-item-desc" data-lang="en">Deposit type — No Deposit cancels far more</div>
+            <div class="data-item-desc" data-lang="th">ประเภทมัดจำ — ลูกค้าที่ไม่วางมัดจำยกเลิก 39% แต่จ่ายแบบ Non-Refundable ยกเลิกเกือบ 0% (แต่มีแค่ 14% ของการจอง)</div>
+            <div class="data-item-desc" data-lang="en">Deposit type — No Deposit guests cancel 39%, Non-Refundable nearly 0% (but only 14% of all bookings)</div>
           </div>
         </div>
       </div>
@@ -345,18 +352,18 @@
         <div class="data-items">
           <div class="data-item">
             <div class="data-item-name">is_repeated_guest</div>
-            <div class="data-item-desc" data-lang="th">แขกเก่ายกเลิกน้อยกว่า 2.6 เท่า</div>
-            <div class="data-item-desc" data-lang="en">Repeat guests cancel 2.6x less</div>
+            <div class="data-item-desc" data-lang="th">แขกเก่ายกเลิกแค่ 14.5% (vs แขกใหม่ 37.8%) — ต้นทุนหาลูกค้าเก่ากลับมาถูกกว่า 5-7 เท่า</div>
+            <div class="data-item-desc" data-lang="en">Repeat guests cancel only 14.5% (vs new 37.8%) — acquiring them costs 5-7x less</div>
           </div>
           <div class="data-item">
             <div class="data-item-name">total_of_special_requests</div>
-            <div class="data-item-desc" data-lang="th">ยิ่งขอมาก ยิ่งมาจริง — สัญญาณความตั้งใจ</div>
-            <div class="data-item-desc" data-lang="en">More requests = more commitment signal</div>
+            <div class="data-item-desc" data-lang="th">เช่น ขอเตียงเสริม, ห้องชั้นสูง, เช็คอินเร็ว — แขกที่ขอ 3+ อย่างยกเลิกแค่ 18% เพราะตั้งใจมาจริง</div>
+            <div class="data-item-desc" data-lang="en">e.g. extra bed, high floor, early check-in — guests with 3+ requests cancel only 18%, showing real intent</div>
           </div>
           <div class="data-item">
             <div class="data-item-name">previous_cancellations</div>
-            <div class="data-item-desc" data-lang="th">ประวัติยกเลิก — ตัวทำนายที่แข็งแกร่ง</div>
-            <div class="data-item-desc" data-lang="en">Cancellation history — strong predictor</div>
+            <div class="data-item-desc" data-lang="th">ประวัติยกเลิก — ลูกค้าที่เคยยกเลิก 1+ ครั้ง มีโอกาสยกเลิกซ้ำสูงมาก เป็น red flag สำคัญ</div>
+            <div class="data-item-desc" data-lang="en">Cancellation history — guests with 1+ prior cancels are very likely to cancel again, a critical red flag</div>
           </div>
         </div>
       </div>
@@ -374,11 +381,11 @@
       <div class="slide-num">03 / 06</div>
       <div data-lang="th">
         <h2>ใครคือแขกตัวจริง? และใครคือ "แขกที่หายไป"</h2>
-        <p class="sec-desc">ข้อมูลเผยให้เห็น 2 สัญญาณหลักที่แยก "จองจริง" กับ "จองแล้วหาย" — Lead Time และ Special Requests</p>
+        <p class="sec-desc">จาก 44,223 การจองที่ยกเลิก เราพบ 2 สัญญาณที่แยกแขกตัวจริงกับแขกที่หายไปได้ชัดเจน — ลองนึกภาพ: ลูกค้า A จองล่วงหน้า 1 สัปดาห์และขอเตียงเสริม (เสี่ยงต่ำ 5%) vs ลูกค้า B จองล่วงหน้า 8 เดือนไม่มี request ใดๆ (เสี่ยงสูง 70%+)</p>
       </div>
       <div data-lang="en">
         <h2>Who Shows Up? And Who Disappears?</h2>
-        <p class="sec-desc">Data reveals 2 key signals separating real guests from ghost bookings — Lead Time and Special Requests.</p>
+        <p class="sec-desc">From 44,223 canceled bookings, 2 signals clearly separate real guests from ghost bookings — imagine: Guest A books 1 week ahead with an extra bed request (5% risk) vs Guest B books 8 months ahead with zero requests (70%+ risk).</p>
       </div>
     </div>
 
@@ -388,10 +395,12 @@
           <canvas id="leadTimeChart" height="280"></canvas>
         </div>
         <div class="insight" data-lang="th">
-          <strong>Insight:</strong> จองล่วงหน้า >6 เดือน ยกเลิก <strong>67.7%</strong> — แต่จอง <30 วัน ยกเลิกแค่ <strong>9.6%</strong>
+          <strong>Insight:</strong> จองล่วงหน้า >6 เดือน ยกเลิก <strong>67.7%</strong> (เกือบ 7 ใน 10 คนหาย) — แต่จอง <30 วัน ยกเลิกแค่ <strong>9.6%</strong><br>
+          <strong>ภาษาธุรกิจ:</strong> ถ้ารับจอง 100 ห้องล่วงหน้า 6+ เดือน จะมีแค่ 33 ห้องที่ได้เงินจริง — ควร overbook หรือเรียกเก็บมัดจำล่วงหน้า
         </div>
         <div class="insight" data-lang="en">
-          <strong>Insight:</strong> Bookings >6 months ahead cancel at <strong>67.7%</strong> — but <30 days cancel only <strong>9.6%</strong>
+          <strong>Insight:</strong> Bookings >6 months ahead cancel at <strong>67.7%</strong> (nearly 7 out of 10 disappear) — but <30 days cancel only <strong>9.6%</strong><br>
+          <strong>Business implication:</strong> If you accept 100 rooms booked 6+ months ahead, only 33 will generate revenue — consider overbooking or requiring deposits.
         </div>
       </div>
       <div>
@@ -399,10 +408,12 @@
           <canvas id="specialReqChart" height="280"></canvas>
         </div>
         <div class="insight" data-lang="th">
-          <strong>Insight:</strong> แขกที่ไม่มี special request ยกเลิก <strong>47.7%</strong> — แต่ขอ ≥5 อย่าง ยกเลิกแค่ <strong>5%</strong>
+          <strong>Insight:</strong> แขกที่ไม่มี special request ยกเลิก <strong>47.7%</strong> — แต่ขอ ≥5 อย่าง ยกเลิกแค่ <strong>5%</strong><br>
+          <strong>ภาษาธุรกิจ:</strong> แขกที่ขอเตียงเสริม, ขอวิวทะเล, ขอเช็คอินเร็ว = สัญญาณว่า "ตั้งใจมาจริง" — ระบบจองควรกระตุ้นให้แขกใส่ request เพื่อเพิ่มความตั้งใจ
         </div>
         <div class="insight" data-lang="en">
-          <strong>Insight:</strong> Guests with 0 requests cancel at <strong>47.7%</strong> — those with ≥5 cancel only <strong>5%</strong>
+          <strong>Insight:</strong> Guests with 0 requests cancel at <strong>47.7%</strong> — those with ≥5 cancel only <strong>5%</strong><br>
+          <strong>Business implication:</strong> Requests like extra bed, sea view, early check-in signal real intent. Booking systems should encourage guests to add requests to boost commitment.
         </div>
       </div>
     </div>
@@ -419,11 +430,11 @@
       <div class="slide-num">04 / 06</div>
       <div data-lang="th">
         <h2>กู้รายได้คืน 15-25% ด้วยระบบทำนายอัจฉริยะ</h2>
-        <p class="sec-desc">XGBoost model วิเคราะห์ 32 ตัวแปรเพื่อให้คะแนนความเสี่ยงทุกการจอง — แม่นยำ 94.5% ก่อนแขกจะยกเลิก</p>
+        <p class="sec-desc">สร้างโมเดล XGBoost (Machine Learning) ที่ให้คะแนนความเสี่ยงทุกการจองตั้งแต่วินาทีที่จองเข้ามา — พูดง่ายๆ คือ ระบบจะบอกได้ทันทีว่า "การจองนี้มีโอกาส 85% ที่จะยกเลิก" ก่อนที่แขกจะยกเลิกจริง เพื่อให้ทีมรับมือได้ทัน</p>
       </div>
       <div data-lang="en">
         <h2>Recover 15-25% of Lost Revenue with AI</h2>
-        <p class="sec-desc">XGBoost analyzes 32 variables to score every booking's risk — 94.5% accurate before guests cancel.</p>
+        <p class="sec-desc">Built an XGBoost (Machine Learning) model that scores every booking's risk the moment it comes in — simply put, the system instantly says "this booking has an 85% chance of canceling" before it happens, giving the team time to act.</p>
       </div>
     </div>
 
@@ -442,18 +453,18 @@
         <div class="cards-3" style="grid-template-columns: 1fr;">
           <div class="card" style="background: rgba(231,76,60,0.15); border: 1px solid rgba(231,76,60,0.3);">
             <h3 style="color: var(--red);">&#9888; <span data-lang="th">ความเสี่ยงสูง (>70%)</span><span data-lang="en">High Risk (>70%)</span></h3>
-            <p style="color: rgba(255,255,255,0.7);" data-lang="th">Overbooking 15-20% + โทรยืนยัน + เสนอ non-refundable discount</p>
-            <p style="color: rgba(255,255,255,0.7);" data-lang="en">Overbook 15-20% + confirmation call + offer non-refundable discount</p>
+            <p style="color: rgba(255,255,255,0.7);" data-lang="th">เช่น ลูกค้าจอง OTA ล่วงหน้า 200 วัน ไม่วางมัดจำ ไม่มี request &rarr; ระบบแจ้งเตือนให้ทีมโทรยืนยัน + รับจองเกิน 15-20% + เสนอ non-refundable discount</p>
+            <p style="color: rgba(255,255,255,0.7);" data-lang="en">e.g. OTA guest, 200-day lead time, no deposit, no requests &rarr; system alerts team to call & confirm + overbook 15-20% + offer non-refundable discount</p>
           </div>
           <div class="card" style="background: rgba(243,156,18,0.15); border: 1px solid rgba(243,156,18,0.3);">
             <h3 style="color: #f39c12;">&#9888; <span data-lang="th">ความเสี่ยงปานกลาง (30-70%)</span><span data-lang="en">Medium Risk (30-70%)</span></h3>
-            <p style="color: rgba(255,255,255,0.7);" data-lang="th">ส่ง email ยืนยัน + เสนอ early check-in / upgrade</p>
-            <p style="color: rgba(255,255,255,0.7);" data-lang="en">Send confirmation email + offer early check-in / upgrade</p>
+            <p style="color: rgba(255,255,255,0.7);" data-lang="th">เช่น ลูกค้า Corporate จองล่วงหน้า 60 วัน ไม่วางมัดจำ แต่มี request 1 อย่าง &rarr; ส่ง email ยืนยัน + เสนอ early check-in หรือ upgrade เพื่อ lock การจอง</p>
+            <p style="color: rgba(255,255,255,0.7);" data-lang="en">e.g. Corporate guest, 60-day lead, no deposit, 1 request &rarr; send confirmation email + offer early check-in or upgrade to lock the booking</p>
           </div>
           <div class="card" style="background: rgba(39,174,96,0.15); border: 1px solid rgba(39,174,96,0.3);">
             <h3 style="color: var(--green);">&#10003; <span data-lang="th">ความเสี่ยงต่ำ (<30%)</span><span data-lang="en">Low Risk (<30%)</span></h3>
-            <p style="color: rgba(255,255,255,0.7);" data-lang="th">ดำเนินการปกติ + เสนอ upsell / loyalty program</p>
-            <p style="color: rgba(255,255,255,0.7);" data-lang="en">Process normally + offer upsell / loyalty program</p>
+            <p style="color: rgba(255,255,255,0.7);" data-lang="th">เช่น แขกเก่าจองตรง 5 วันก่อนเข้าพัก มี request 3 อย่าง &rarr; ดำเนินการปกติ ไม่ต้องโทรยืนยัน + เสนอ upsell ห้องใหญ่ขึ้นหรือ loyalty program</p>
+            <p style="color: rgba(255,255,255,0.7);" data-lang="en">e.g. Repeat guest, direct booking 5 days ahead, 3 requests &rarr; process normally, no confirmation needed + offer room upgrade or loyalty program</p>
           </div>
         </div>
       </div>
@@ -470,12 +481,12 @@
     <div class="reveal">
       <div class="slide-num">05 / 06</div>
       <div data-lang="th">
-        <h2>Dynamic Pricing: ตั้งราคาตามพฤติกรรม</h2>
-        <p class="sec-desc">ราคาเฉลี่ยต่อคืน (ADR) เปลี่ยนตามฤดูกาลและประเภทโรงแรม — sweet spot อยู่ที่จองล่วงหน้า 8-30 วัน</p>
+        <h2>Dynamic Pricing: ตั้งราคาตามพฤติกรรม ไม่ใช่ตามสัญชาตญาณ</h2>
+        <p class="sec-desc">ราคาห้อง (ADR) เปลี่ยนตามฤดูกาลอย่างชัดเจน — เช่น City Hotel เดือน ส.ค. ได้ถึง $147/คืน แต่ ม.ค. เหลือ $89/คืน (ห่างกัน 65%) แต่โรงแรมส่วนใหญ่ยังตั้งราคาเท่ากันตลอดปี ทำให้เสียรายได้ช่วง High Season และไม่ดึงลูกค้า Low Season</p>
       </div>
       <div data-lang="en">
-        <h2>Dynamic Pricing: Price by Behavior</h2>
-        <p class="sec-desc">ADR shifts by season and hotel type — the pricing sweet spot is bookings made 8-30 days ahead.</p>
+        <h2>Dynamic Pricing: Price by Data, Not Gut Feel</h2>
+        <p class="sec-desc">Room rates (ADR) shift dramatically by season — e.g. City Hotel gets $147/night in Aug but only $89 in Jan (65% gap). Most hotels still use flat pricing year-round, missing High Season upside and failing to attract Low Season demand.</p>
       </div>
     </div>
 
@@ -495,19 +506,26 @@
     <div class="stats-row reveal stagger" style="margin-top:24px;">
       <div class="stat-card" style="background:var(--light); border-radius:12px;">
         <div class="stat-val" style="color:var(--dark);">$105</div>
-        <div class="stat-label" data-lang="th">Sweet Spot ADR (8-30 วัน)</div>
-        <div class="stat-label" data-lang="en">Sweet Spot ADR (8-30 days)</div>
+        <div class="stat-label" data-lang="th">Sweet Spot ADR (จอง 8-30 วันล่วงหน้า) — ลูกค้ากลุ่มนี้พร้อมจ่ายและยกเลิกน้อย</div>
+        <div class="stat-label" data-lang="en">Sweet Spot ADR (8-30 day bookings) — these guests pay well and rarely cancel</div>
       </div>
       <div class="stat-card" style="background:var(--light); border-radius:12px;">
         <div class="stat-val" style="color:var(--red);">+60%</div>
-        <div class="stat-label" data-lang="th">ช่วง High vs Low Season</div>
-        <div class="stat-label" data-lang="en">High vs Low Season Gap</div>
+        <div class="stat-label" data-lang="th">ช่วง High vs Low Season — ราคา ส.ค. สูงกว่า ม.ค. ถึง 60% แต่โรงแรมหลายแห่งไม่ได้ปรับตาม</div>
+        <div class="stat-label" data-lang="en">High vs Low Season gap — Aug rates 60% higher than Jan, but many hotels don't adjust</div>
       </div>
       <div class="stat-card" style="background:var(--light); border-radius:12px;">
         <div class="stat-val" style="color:var(--green);">$0.6-1.1M</div>
-        <div class="stat-label" data-lang="th">รายได้เพิ่มจาก Dynamic Pricing</div>
-        <div class="stat-label" data-lang="en">Revenue Uplift from Dynamic Pricing</div>
+        <div class="stat-label" data-lang="th">รายได้เพิ่มจาก Dynamic Pricing — แค่ปรับราคา $8-15/คืน ตามฤดูกาลก็เห็นผล</div>
+        <div class="stat-label" data-lang="en">Revenue uplift — just adjusting $8-15/night by season makes a significant impact</div>
       </div>
+    </div>
+
+    <div class="insight reveal" style="margin-top:16px;" data-lang="th">
+      <strong>ตัวอย่างการใช้งาน:</strong> ถ้าลูกค้าจอง City Hotel เดือน ส.ค. ล่วงหน้า 15 วัน (Sweet Spot) &rarr; ตั้งราคา premium $150/คืน (ปกติ $112) เพราะ demand สูง + cancel rate ต่ำ แต่ถ้าเดือน ม.ค. ยอดจองน้อย &rarr; ลด 10-15% เป็น $76/คืน เพื่อดึง occupancy
+    </div>
+    <div class="insight reveal" style="margin-top:16px;" data-lang="en">
+      <strong>Example:</strong> If a guest books a City Hotel in Aug, 15 days ahead (Sweet Spot) &rarr; price at premium $150/night (vs avg $112) because demand is high + cancel rate is low. But in Jan when bookings are low &rarr; discount 10-15% to $76/night to drive occupancy.
     </div>
   </div>
 </section>
@@ -522,11 +540,11 @@
       <div class="slide-num" style="color:rgba(255,255,255,0.3);">06 / 06</div>
       <div data-lang="th">
         <h2>สรุป: ผลลัพธ์ที่จับต้องได้</h2>
-        <p class="sec-desc">Framework ที่สร้างจากข้อมูลจริง พร้อมนำไปใช้กับธุรกิจโรงแรมทันที</p>
+        <p class="sec-desc">จากข้อมูลการจอง 119,390 รายการ สร้าง Framework ครบวงจร — ทำนายความเสี่ยง, ตั้งราคาอัจฉริยะ, และแบ่งกลุ่มลูกค้า ทั้งหมดสร้างจากข้อมูลจริง พร้อมนำไปปรับใช้กับโรงแรมใดก็ได้ที่มีระบบ PMS</p>
       </div>
       <div data-lang="en">
         <h2>The Bottom Line</h2>
-        <p class="sec-desc">A data-driven framework ready for real hotel business implementation.</p>
+        <p class="sec-desc">From 119,390 bookings, built an end-to-end framework — risk prediction, dynamic pricing, and guest segmentation. All data-driven and adaptable to any hotel with a PMS system.</p>
       </div>
     </div>
 
@@ -549,18 +567,25 @@
     </div>
 
     <div class="reveal">
-      <div class="cta-box">
-        <div data-lang="th">
-          <h3>พร้อมนำ Framework นี้ไปประยุกต์ใช้กับ Data ของ Favstay</h3>
-          <p>ระบบทำนาย + Dynamic Pricing + Guest Segmentation ที่ปรับแต่งได้ตามข้อมูลจริงของคุณ</p>
+      <div class="cards-3" style="margin-top: 0;">
+        <div class="card" style="background: rgba(39,174,96,0.15); border: 1px solid rgba(39,174,96,0.3);">
+          <h3 style="color: var(--green);" data-lang="th">AI Prediction</h3>
+          <h3 style="color: var(--green);" data-lang="en">AI Prediction</h3>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="th">ทำนายการยกเลิกล่วงหน้า แม่นยำ 94.5% — ทีม Revenue Manager ใช้จัดการ overbooking และ outreach ได้ทันที</p>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="en">Predict cancellations at 94.5% accuracy — Revenue Managers can immediately manage overbooking and guest outreach</p>
         </div>
-        <div data-lang="en">
-          <h3>Ready to Apply This Framework to Favstay's Data</h3>
-          <p>Prediction system + Dynamic Pricing + Guest Segmentation customized to your real data.</p>
+        <div class="card" style="background: rgba(52,152,219,0.15); border: 1px solid rgba(52,152,219,0.3);">
+          <h3 style="color: var(--blue);" data-lang="th">Dynamic Pricing</h3>
+          <h3 style="color: var(--blue);" data-lang="en">Dynamic Pricing</h3>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="th">ปรับราคาตาม season, lead time, ช่องทาง — เพิ่มรายได้ $0.6-1.1M/ปี โดยไม่ต้องเพิ่มจำนวนห้อง</p>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="en">Price by season, lead time, channel — add $0.6-1.1M/year revenue without adding rooms</p>
         </div>
-        <a href="mailto:nongnat@example.com" class="cta-btn">
-          <span data-lang="th">ติดต่อพูดคุย</span><span data-lang="en">Let's Talk</span>
-        </a>
+        <div class="card" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);">
+          <h3 style="color: var(--white);" data-lang="th">Guest Segmentation</h3>
+          <h3 style="color: var(--white);" data-lang="en">Guest Segmentation</h3>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="th">แบ่งลูกค้า 4 กลุ่มตามมูลค่า — VIP, Mid-Value, Loyal Budget, Transient — แต่ละกลุ่มใช้กลยุทธ์ต่างกัน</p>
+          <p style="color: rgba(255,255,255,0.7);" data-lang="en">4 customer segments by value — VIP, Mid-Value, Loyal Budget, Transient — each with a tailored strategy</p>
+        </div>
       </div>
     </div>
 
@@ -689,6 +714,38 @@ Chart.defaults.color = '#999';
 Chart.defaults.plugins.legend.labels.usePointStyle = true;
 Chart.defaults.plugins.legend.labels.pointStyleWidth = 10;
 
+// Monthly insights (TH / EN)
+const MONTHLY_INSIGHTS = {
+  th: [
+    'ม.ค. — Low Season, ยอดจองต่ำสุด หลังเทศกาลปีใหม่ ลูกค้าลดลง',
+    'ก.พ. — เริ่มฟื้นตัว ช่วง Valentine + การจองล่วงหน้าสำหรับ Spring',
+    'มี.ค. — ขาขึ้น เริ่มเข้า Spring Break + นักท่องเที่ยวจองล่วงหน้า',
+    'เม.ย. — High Season เริ่ม Easter holiday + ช่วงสงกรานต์ (เอเชีย)',
+    'พ.ค. — ยอดจองสูง ช่วงก่อนหน้าร้อน + long weekend holidays',
+    'มิ.ย. — เริ่มหน้าร้อนจริง ยอดจองสูงแต่ราคายังขึ้นต่อ',
+    'ก.ค. — Peak Season, ยอดจองสูงมาก หน้าร้อนยุโรป + ปิดเทอม',
+    'ส.ค. — สูงสุดของปี! 13,877 bookings, revenue $4.9M จากนักท่องเที่ยวหน้าร้อน',
+    'ก.ย. — ขาลง หลังหน้าร้อน แต่ยังมี business travel กลับมา',
+    'ต.ค. — ยังพอดี มี Autumn travel + ช่วง conference season',
+    'พ.ย. — Low Season กลับมา ยอดลดครึ่ง เหลือ ~6,800',
+    'ธ.ค. — ต่ำเท่า ม.ค. แม้มีเทศกาลปีใหม่ แต่คนจองช้าและยกเลิกเยอะ'
+  ],
+  en: [
+    'Jan — Low Season, lowest bookings after New Year holiday slowdown',
+    'Feb — Recovery begins, Valentine\'s + Spring advance bookings',
+    'Mar — Uptrend, Spring Break travel + early summer planners',
+    'Apr — High Season starts, Easter holiday + seasonal tourism',
+    'May — Strong bookings, pre-summer rush + long weekend holidays',
+    'Jun — Summer begins, high bookings with rising rates',
+    'Jul — Peak Season, very high demand from European summer + school holidays',
+    'Aug — Year\'s highest! 13,877 bookings, $4.9M revenue from summer tourists',
+    'Sep — Decline after summer, but business travel returns',
+    'Oct — Moderate, Autumn travel + conference season helps',
+    'Nov — Low Season returns, bookings drop by half to ~6,800',
+    'Dec — Low like Jan, despite year-end holidays, late bookings and high cancellations'
+  ]
+};
+
 // ============================================================
 // SLIDE 1: REVENUE GAP CHART
 // ============================================================
@@ -737,10 +794,16 @@ function createRevenueChart(filter = 'all') {
         tooltip: {
           backgroundColor: '#2D2D2D',
           titleFont: { weight: 600 },
+          bodySpacing: 6,
           callbacks: {
             label: function(ctx) {
               if (ctx.datasetIndex === 1) return ' Revenue: $' + ctx.raw.toLocaleString();
               return ' Bookings: ' + ctx.raw.toLocaleString();
+            },
+            afterBody: function(tooltipItems) {
+              const idx = tooltipItems[0].dataIndex;
+              const isEn = document.body.classList.contains('en');
+              return '\n' + (isEn ? MONTHLY_INSIGHTS.en[idx] : MONTHLY_INSIGHTS.th[idx]);
             }
           }
         }
